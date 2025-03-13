@@ -1,12 +1,11 @@
-import type { Route } from "./+types/home";
+import { LoginForm } from '~/components/login-form';
 
-export function meta({ }: Route.MetaArgs) {
-    return [
-        { title: "Login - NHS Dashboard" },
-        { name: "description", content: "능주고 대시보드 로그인" },
-    ];
-}
-
-export default function Home() {
-    return <>ss</>;
+export default function Page() {
+  return (
+    <div className='flex min-h-svh w-full items-center justify-center p-6 md:p-10'>
+      <div className='w-full max-w-sm'>
+        <LoginForm />
+      </div>
+    </div>
+  );
 }

@@ -1,0 +1,6 @@
+{
+  "editor.foldingImportsByDefault": true,
+  "editor.foldingStrategy": "auto",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
