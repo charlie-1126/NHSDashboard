@@ -1,0 +1,9 @@
+services:
+  NHSDashboard:
+    build: .
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
