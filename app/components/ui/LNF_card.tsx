@@ -36,14 +36,16 @@ export function LNFCard({ feature }: LNFCardProps) {
             <div className="relative w-full h-7/10 overflow-hidden">
                 {feature.image ? (
                     <img
-                        src={feature.image || "/placeholder.svg"}
+                        src={feature.image || "public/assets/image/noimg.gif"}
                         alt={feature.title}
                         className="absolute inset-0 w-full h-full object-cover object-center"
                     />
                 ) : (
-                    <div className="absolute inset-0 w-full h-full object-cover object-center">
-                        <span className="text-gray-400">No Image</span>
-                    </div>
+                    <img
+                        src="public/assets/image/noimg.gif"
+                        alt={feature.title}
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                    />
                 )}
             </div>
             <div className="px-4 py-4 md:px-5 md:py-5 flex-grow">

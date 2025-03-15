@@ -10,8 +10,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>Enter your id below to login to your account</CardDescription>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Enter admin id below to login to admin account</CardDescription>
         </CardHeader>
         <CardContent>
           <form>
@@ -28,7 +28,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                       Forgot your password?
                     </PopoverTrigger>
                     <PopoverContent className='text-sm w-auto'>
-                      Please contact to 땡땡땡
+                      Please contact to "charlie8695992@gmail.com"
                     </PopoverContent>
                   </Popover>
                 </div>
