@@ -1,0 +1,65 @@
+.Main {
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.horizontal-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* LNF 영역 스타일 */
+.LNF {
+    padding: 10px;
+}
+
+.LNF_container {
+    overflow: hidden;
+}
+
+.lost-items {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lost-item {
+    margin-right: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+}
+
+/* 이미지 스타일 (필요에 따라 수정) */
+.lost-item img {
+    width: 100%;
+    height: auto;
+}
+
+/* Meal 영역 스타일 */
+.NMS {
+    /* 기존 padding 유지 */
+    padding: 10px;
+    /* 고정된 너비를 지정 */
+    width: 300px;
+    /* flex 컨테이너 내에서 크기 축소 방지 */
+    flex-shrink: 0;
+}
+
+.NMS_container {
+    background: #f9f9f9;
+    padding: 10px;
+}
+
+.MealData {
+    list-style: none;
+    padding: 0;
+}
+
+/* 구분선 스타일 */
+.divider {
+    width: 2px;
+    background: #ddd;
+    margin: 0 10px;
+}
