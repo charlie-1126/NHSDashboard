@@ -1,7 +1,7 @@
 import type { Route } from './+types/home';
 import { Main } from '../components/main';
 
-export function meta({ }: Route.MetaArgs) {
+export function meta({}: Route.MetaArgs) {
   return [{ title: 'NHS Dashboard' }, { name: 'description', content: '능주고 대시보드' }];
 }
 
