@@ -5,23 +5,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/com
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
-import { Link, redirect, useActionData, useFetcher } from 'react-router';
+import { Link, redirect, useFetcher } from 'react-router';
+import { AiOutlineLoading } from "react-icons/ai";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [{ title: 'Signin - NHS Dashboard' }];
 }
 
 export async function action({ request }: Route.ActionArgs) {
   const data = await request.formData();
 
-  console.log(data);
+  const id = data.get('id')?.toString();
+  const password = data.get('password')?.toString();
 
-  return { ok: true };
+  if (!id) {
+    return { errors: { id: 'Id is required' } };
+  }
+
+  if (!password) {
+    return { errors: { password: 'Password is required' } };
+  }
+
+  //TODO : Implement actual login logic
+
+  if (id !== 'admin' || password !== 'admin') {
+    return { errors: { id: 'Invalid id or password', password: 'Invalid id or password' } };
+  }
+
+  return redirect('/dashboard');
 }
 
 export default function SignIn() {
   const fetcher = useFetcher();
-  const data = useActionData();
 
   return (
     <div className='flex min-h-svh w-full items-center justify-center p-6 md:p-10'>
@@ -33,11 +48,12 @@ export default function SignIn() {
               <CardDescription>Enter your id below to login to your account</CardDescription>
             </CardHeader>
             <CardContent>
-              <fetcher.Form method='POST'>
+              <fetcher.Form method='post'>
                 <div className='flex flex-col gap-6'>
                   <div className='grid gap-3'>
                     <Label htmlFor='id'>Id</Label>
-                    <Input id='id' type='id' placeholder='admin' required />
+                    {fetcher.data?.errors?.id && <div className='text-red-500 text-[13px]'>{fetcher.data.errors.id}</div>}
+                    <Input name='id' type='id' placeholder='admin' required />
                   </div>
                   <div className='grid gap-3'>
                     <div className='flex items-center'>
@@ -51,11 +67,13 @@ export default function SignIn() {
                         </PopoverContent>
                       </Popover>
                     </div>
-                    <Input id='password' type='password' required />
+                    {fetcher.data?.errors?.password && <div className='text-red-500 text-[13px]'>{fetcher.data.errors.password}</div>}
+                    <Input name='password' type='password' required />
                   </div>
                   <div className='flex flex-col gap-3'>
                     <Button type='submit' className='w-full' disabled={fetcher.state !== 'idle'}>
-                      Login
+                      <AiOutlineLoading className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
+                      {fetcher.state !== 'idle' ? 'Loggin in' : 'Login'}
                     </Button>
                     <div className='text-center text-sm'>
                       Don't have an account?{' '}
