@@ -140,7 +140,10 @@ export function Dashboard() {
             <CardContent>
               {meals.map((meal, index) => (
                 <>
-                  <h3 className={`mb-2 text-base font-bold${index != 0 ? 'pt-2' : ''}`} key={index}>
+                  <h3
+                    className={`mb-2 text-base font-bold ${index != 0 ? 'pt-2' : ''}`}
+                    key={index}
+                  >
                     {meals[0].meal_NM == '석식' && index == 1
                       ? `다음날 ${meal.meal_NM}`
                       : meal.meal_NM}

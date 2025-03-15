@@ -6,11 +6,11 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { Link, redirect, useFetcher } from 'react-router';
-import { AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineLoading } from 'react-icons/ai';
 import { authenticator, sessionStorage } from '~/auth.server';
 
-export function meta({ }: Route.MetaArgs) {
-  return [{ title: 'Signin - NHS Dashboard' }];
+export function meta({}: Route.MetaArgs) {
+  return [{ title: 'login - NHS Dashboard' }];
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -18,15 +18,21 @@ export async function action({ request }: Route.ActionArgs) {
     const user = await authenticator.authenticate('form', request);
     const session = await sessionStorage.getSession(request.headers.get('cookie'));
     session.set('user', user.uuid);
-    return redirect('/dashboard', { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
+    return redirect('/dashboard', {
+      headers: { 'Set-Cookie': await sessionStorage.commitSession(session) },
+    });
   } catch (error) {
-    if (error instanceof Error && typeof error.message === 'string' && error.message.startsWith('{')) {
+    if (
+      error instanceof Error &&
+      typeof error.message === 'string' &&
+      error.message.startsWith('{')
+    ) {
       return JSON.parse(error.message);
     }
   }
 }
 
-export default function SignIn() {
+export default function Login() {
   const fetcher = useFetcher();
 
   return (
@@ -43,7 +49,9 @@ export default function SignIn() {
                 <div className='flex flex-col gap-6'>
                   <div className='grid gap-3'>
                     <Label htmlFor='id'>Id</Label>
-                    {fetcher.data?.errors?.id && <div className='text-red-500 text-[13px]'>{fetcher.data.errors.id}</div>}
+                    {fetcher.data?.errors?.id && (
+                      <div className='text-[13px] text-red-500'>{fetcher.data.errors.id}</div>
+                    )}
                     <Input name='id' type='id' placeholder='admin' required />
                   </div>
                   <div className='grid gap-3'>
@@ -58,12 +66,16 @@ export default function SignIn() {
                         </PopoverContent>
                       </Popover>
                     </div>
-                    {fetcher.data?.errors?.password && <div className='text-red-500 text-[13px]'>{fetcher.data.errors.password}</div>}
+                    {fetcher.data?.errors?.password && (
+                      <div className='text-[13px] text-red-500'>{fetcher.data.errors.password}</div>
+                    )}
                     <Input name='password' type='password' required />
                   </div>
                   <div className='flex flex-col gap-3'>
                     <Button type='submit' className='w-full' disabled={fetcher.state !== 'idle'}>
-                      <AiOutlineLoading className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
+                      <AiOutlineLoading
+                        className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'}
+                      />
                       {fetcher.state !== 'idle' ? 'Loggin in' : 'Login'}
                     </Button>
                     <div className='text-center text-sm'>
