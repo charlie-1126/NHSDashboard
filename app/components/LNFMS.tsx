@@ -1,7 +1,5 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { LNFMSCard } from './ui/LNFMS_card';
+import { LNFMSCard } from './LNFMSCard';
 import { ArrowLeft, LogOut, Trash2 } from 'lucide-react';
 import { LuSquareCheckBig } from 'react-icons/lu';
 import * as React from 'react';
@@ -15,81 +13,9 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Button } from './ui/button';
+import type { itemTable } from '~/db';
 
-type Status = keyof typeof statusList;
-
-const statusList = {
-  PENDING: '보관중',
-  RETURNED: '반환됨',
-  DISCARDED: '폐기됨',
-  DELETED: '삭제됨',
-};
-
-type Feature = {
-  title: string;
-  dateAcquired: string;
-  location: string;
-  disposalDate: string;
-  image: string;
-  reporter: string;
-  receiver: string;
-  status: Status;
-};
-
-const items: Feature[] = [
-  {
-    title: '갤럭시 버즈3 프로',
-    dateAcquired: '2025-03-13',
-    location: '2-4',
-    disposalDate: '2025-03-27',
-    image: 'https://url.kr/cqi4sj',
-    reporter: '학생A',
-    receiver: '학생B',
-    status: 'PENDING',
-  },
-  {
-    title: '아이폰 15',
-    dateAcquired: '2025-03-10',
-    location: '3-2',
-    disposalDate: '2025-03-25',
-    image: 'https://blog.kakaocdn.net/dn/cZIUet/btsEGiAfpmX/xiFZZnhWZJQwlrNKW8fPX1/img.jpg',
-    reporter: '학생A',
-    receiver: '학생B',
-    status: 'PENDING',
-  },
-  {
-    title: '태블릿 X',
-    dateAcquired: '2025-03-05',
-    location: '1-1',
-    disposalDate: '2025-03-20',
-    image: '',
-    reporter: '학생A',
-    receiver: '학생B',
-    status: 'PENDING',
-  },
-  {
-    title: '스마트워치 Z',
-    dateAcquired: '2025-03-01',
-    location: '4-3',
-    disposalDate: '2025-03-15',
-    image: '',
-    reporter: '학생A',
-    receiver: '학생B',
-    status: 'PENDING',
-  },
-  {
-    title: '스마트워치 Z',
-    dateAcquired: '2025-03-01',
-    location: '4-3',
-    disposalDate: '2025-03-15',
-    image: '',
-    reporter: '학생A',
-    receiver: '학생B',
-    status: 'PENDING',
-  },
-];
-
-export function LNFMS() {
+export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const [itemsList, setItemsList] = React.useState(items);
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -198,7 +124,7 @@ export function LNFMS() {
             <LNFMSCard
               onClick={() => cardClick(index)}
               key={index}
-              feature={item}
+              item={item}
               onDelete={() => handleDeleteRequest(index)}
               className={`cursor-pointer transition-colors ${
                 selectList.includes(index) ? 'bg-blue-50' : ''
@@ -215,7 +141,7 @@ export function LNFMS() {
             <DialogTitle>분실물 삭제</DialogTitle>
             <DialogDescription>
               {deleteIndex !== null && itemsList[deleteIndex]
-                ? `"${itemsList[deleteIndex].title}" 항목을 삭제하시겠습니까?`
+                ? `"${itemsList[deleteIndex].name}" 항목을 삭제하시겠습니까?`
                 : '이 항목을 삭제하시겠습니까?'}
             </DialogDescription>
           </DialogHeader>

@@ -1,4 +1,4 @@
-import type { Route } from './+types/home';
+import type { Route } from './+types/login';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
@@ -6,7 +6,7 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { Link, redirect, useFetcher } from 'react-router';
-import { AiOutlineLoading } from 'react-icons/ai';
+import { LoaderCircle } from 'lucide-react';
 import { authenticator, sessionStorage } from '~/auth.server';
 
 export function meta({}: Route.MetaArgs) {
@@ -15,6 +15,8 @@ export function meta({}: Route.MetaArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
   try {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const user = await authenticator.authenticate('form', request);
     const session = await sessionStorage.getSession(request.headers.get('cookie'));
     session.set('user', user.uuid);
@@ -62,7 +64,7 @@ export default function Login() {
                           Forgot your password?
                         </PopoverTrigger>
                         <PopoverContent className='w-auto text-sm'>
-                          Please contact to 땡땡땡
+                          Please contact to 이예찬
                         </PopoverContent>
                       </Popover>
                     </div>
@@ -73,10 +75,10 @@ export default function Login() {
                   </div>
                   <div className='flex flex-col gap-3'>
                     <Button type='submit' className='w-full' disabled={fetcher.state !== 'idle'}>
-                      <AiOutlineLoading
+                      <LoaderCircle
                         className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'}
                       />
-                      {fetcher.state !== 'idle' ? 'Loggin in' : 'Login'}
+                      {fetcher.state !== 'idle' ? 'Logging in' : 'Login'}
                     </Button>
                     <div className='text-center text-sm'>
                       Don't have an account?{' '}

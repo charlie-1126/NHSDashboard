@@ -1,51 +1,24 @@
-'use client';
 import { CalendarIcon, MapPinIcon, ClockIcon, Trash2 } from 'lucide-react';
 import { RiUserReceived2Line, RiUserShared2Line } from 'react-icons/ri';
-
-type Status = keyof typeof statusList;
-
-const statusList = {
-  PENDING: '보관중',
-  RETURNED: '반환됨',
-  DISCARDED: '폐기됨',
-  DELETED: '삭제됨',
-};
-
-type Feature = {
-  title: string;
-  dateAcquired: string;
-  location: string;
-  disposalDate: string;
-  image: string;
-  reporter: string;
-  receiver: string;
-  status: Status;
-};
+import type { itemTable } from '~/db';
+import { calculateRemainingDaysAndDate, formatDate } from '~/lib/utils';
 
 interface LNFCardProps {
-  feature: Feature;
+  item: typeof itemTable.$inferSelect;
   onDelete: () => void;
   onClick?: () => void;
   className?: string;
 }
 
-export function LNFMSCard({ feature, onDelete, onClick, className }: LNFCardProps) {
-  // Format dates to be more readable
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
-  };
+const statusMap = {
+  PENDING: '대기중',
+  RETURNED: '반환됨',
+  DISCARDED: '폐기됨',
+  DELETED: '삭제됨',
+};
 
-  // Calculate days remaining until disposal
-  const getDaysRemaining = () => {
-    const today = new Date();
-    const disposalDate = new Date(feature.disposalDate);
-    const diffTime = disposalDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  const daysRemaining = getDaysRemaining();
+export function LNFMSCard({ item, onDelete, onClick, className }: LNFCardProps) {
+  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, 7);
 
   return (
     <div
@@ -53,41 +26,33 @@ export function LNFMSCard({ feature, onDelete, onClick, className }: LNFCardProp
       onClick={onClick}
     >
       <div className='aspect-square h-full'>
-        {feature.image ? (
-          <img
-            src={feature.image || '/public/assets/image/noimg.gif'}
-            alt={feature.title}
-            className='h-full w-full object-cover object-center'
-          />
-        ) : (
-          <img
-            src={'/public/assets/image/noimg.gif'}
-            alt={feature.title}
-            className='h-full w-full object-cover object-center'
-          />
-        )}
+        <img
+          src={item.image?.length ? item.image : '/image/noImg.gif'}
+          alt={item.name}
+          className='inset-0 h-full w-full object-cover object-center'
+        />
       </div>
       <div className='flex-grow px-4 py-3 pr-8'>
-        <h3 className='mb-2 text-lg font-semibold'>{feature.title}</h3>
+        <h3 className='mb-2 text-lg font-semibold'>{item.name}</h3>
         <div className='flex gap-7'>
           <div className='text-muted-foreground space-y-1 text-sm'>
             <p className='flex items-center'>
               <CalendarIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
-                <strong>취득 일자:</strong> {formatDate(feature.dateAcquired)}
+                <strong>취득 일자:</strong> {formatDate(item.createdAt)}
               </span>
             </p>
             <p className='flex items-center'>
               <MapPinIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
-                <strong>취득 장소:</strong> {feature.location}
+                <strong>취득 장소:</strong> {item.location}
               </span>
             </p>
             <p className='flex items-center'>
               <ClockIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
-              <span className={daysRemaining <= 3 ? 'text-red-500' : ''}>
-                <strong>폐기 일자:</strong> {formatDate(feature.disposalDate)}
-                <span className='ml-1 font-medium'>({daysRemaining}일 남음)</span>
+              <span className={diffDays <= 3 ? 'text-red-500' : ''}>
+                <strong>폐기 일자:</strong> {formatDate(targetDate)}
+                <span className='ml-1 font-medium'>({diffDays}일 남음)</span>
               </span>
             </p>
           </div>
@@ -95,19 +60,19 @@ export function LNFMSCard({ feature, onDelete, onClick, className }: LNFCardProp
             <p className='flex items-center'>
               <RiUserShared2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
-                <strong>제보자:</strong> {feature.reporter}
+                <strong>제보자:</strong> {item.reporter}
               </span>
             </p>
             <p className='flex items-center'>
               <RiUserReceived2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
-                <strong>인수자:</strong> {feature.receiver}
+                <strong>인수자:</strong> {item.receiver}
               </span>
             </p>
             <p className='flex items-center'>
               <RiUserReceived2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
-                <strong>상태:</strong> {statusList[feature.status]}
+                <strong>상태:</strong> {statusMap[item.status]}
               </span>
             </p>
           </div>
