@@ -1,6 +1,5 @@
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { userTable } from './user.schema';
 import { randomUUID } from 'node:crypto';
 
 export const itemTable = sqliteTable('item', {
@@ -23,20 +22,6 @@ export const itemTable = sqliteTable('item', {
    * @example '1102 홍길동'
    */
   receiver: text().notNull(),
-
-  /**
-   * 제보자 담당자 uuid
-   */
-  reportHandlerUUID: text('report_handler_uuid')
-    .notNull()
-    .references(() => userTable.uuid),
-
-  /**
-   * 인수자 담당자 uuid
-   */
-  receiverHandlerUUID: text('receiver_handler_uuid')
-    .notNull()
-    .references(() => userTable.uuid),
 
   /**
    * 분실물 이름
