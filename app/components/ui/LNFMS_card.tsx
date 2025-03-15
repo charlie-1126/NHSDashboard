@@ -12,9 +12,11 @@ type Feature = {
 interface LNFCardProps {
   feature: Feature;
   onDelete: () => void;
+  onClick?: () => void;
+  className?: string;
 }
 
-export function LNFMSCard({ feature, onDelete }: LNFCardProps) {
+export function LNFMSCard({ feature, onDelete, onClick, className }: LNFCardProps) {
   // Format dates to be more readable
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -33,7 +35,10 @@ export function LNFMSCard({ feature, onDelete }: LNFCardProps) {
   const daysRemaining = getDaysRemaining();
 
   return (
-    <div className='border-border relative flex h-36 flex-row overflow-hidden rounded-xl border'>
+    <div
+      className={`border-border relative flex h-36 cursor-pointer flex-row overflow-hidden rounded-xl border transition-shadow hover:shadow-lg ${className}`}
+      onClick={onClick}
+    >
       <div className='aspect-square h-full'>
         {feature.image ? (
           <img
@@ -74,8 +79,11 @@ export function LNFMSCard({ feature, onDelete }: LNFCardProps) {
         </div>
       </div>
       <button
-        onClick={onDelete}
-        className='absolute top-3 right-3 rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100'
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        className='absolute top-3 right-3 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100'
         aria-label='삭제'
       >
         <Trash2 size={16} />

@@ -34,17 +34,53 @@ const items = [
     disposalDate: '2025-03-15',
     image: '',
   },
+  {
+    title: '스마트워치 Z',
+    dateAcquired: '2025-03-01',
+    location: '4-3',
+    disposalDate: '2025-03-15',
+    image: '',
+  },
+];
+
+const meals = [
+  {
+    meal_NM: '석식',
+    meal: [
+      '쌀밥',
+      '돈육김치찌개 (5.9.10)',
+      '볼어묵야채볶음 (1.5.6)',
+      '오이무침 (5.6.13)',
+      '치즈달걀말이 (1.2.5)',
+      '소품떡/소스 (2.5.6.10.12.13.15.16)',
+      '돌산갓김치 (9)',
+      '짜먹는요구르트(딸기) (2)',
+    ],
+  },
+  {
+    meal_NM: '조식',
+    meal: [
+      '쌀밥',
+      '돈육김치찌개 (5.9.10)',
+      '볼어묵야채볶음 (1.5.6)',
+      '오이무침 (5.6.13)',
+      '치즈달걀말이 (1.2.5)',
+      '소품떡/소스 (2.5.6.10.12.13.15.16)',
+      '돌산갓김치 (9)',
+      '짜먹는요구르트(딸기) (2)',
+    ],
+  },
 ];
 
 export function Dashboard() {
-  const itemsPerPage = 3;
-  // 전체 페이지 수 계산 (총 항목이 3의 배수가 아니면 마지막 페이지는 남은 항목만)
+  const itemsPerPage = 4;
+  // 전체 페이지 수 계산 (총 항목이 4의 배수가 아니면 마지막 페이지는 남은 항목만)
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    if (totalPages <= 1) return; // 항목이 3개 이하인 경우 페이지 전환 없이 그대로 표시
+    if (totalPages <= 1) return; // 항목이 4개 이하인 경우 페이지 전환 없이 그대로 표시
     const interval = setInterval(() => {
       setCurrentPage((prev) => (prev + 1) % totalPages);
     }, 5000);
@@ -59,15 +95,20 @@ export function Dashboard() {
       <div className='flex h-full flex-grow flex-col gap-4 md:flex-row'>
         {/* LNF 영역 */}
         <div className='h-full flex-grow md:w-7/10'>
-          <Card className='h-full'>
+          <Card className='h-full gap-0'>
             <CardHeader className='pb-2'>
-              <CardTitle>분실물 안내 (LNF)</CardTitle>
+              <CardTitle className='pb-1 text-2xl'>분실물 안내 (LNF)</CardTitle>
             </CardHeader>
             <CardContent className='flex h-full flex-col'>
-              {/* 카드를 가로로 3개씩 배치 */}
-              <div className='grid h-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
+              <div className='grid h-full grid-cols-2 grid-rows-2 gap-4'>
                 {currentItems.map((item, index) => (
-                  <LNFCard key={index} feature={item} />
+                  <div key={index} className='h-auto'>
+                    <LNFCard feature={item} />
+                  </div>
+                ))}
+                {/* 빈 셀을 추가하여 그리드를 채움 */}
+                {Array.from({ length: Math.max(0, 4 - currentItems.length) }).map((_, index) => (
+                  <div key={`empty-${index}`} className='h-auto'></div>
                 ))}
               </div>
               {totalPages > 1 && (
@@ -92,24 +133,27 @@ export function Dashboard() {
 
         {/* Meal 영역 */}
         <div className='md:w-3/10'>
-          <Card className='h-full'>
-            <CardHeader className='pb-2'>
-              <CardTitle>오늘의 식단</CardTitle>
+          <Card className='h-full gap-0'>
+            <CardHeader className='pb-0'>
+              <CardTitle className='pb-1 text-2xl'>오늘의 식단</CardTitle>
             </CardHeader>
             <CardContent>
-              <h3 className='mb-2 font-medium'>조식</h3>
-              <Card>
-                <CardContent>
-                  <p>쌀밥</p>
-                  <p>돈육김치찌개 (5.9.10)</p>
-                  <p>볼어묵야채볶음 (1.5.6)</p>
-                  <p>오이무침 (5.6.13)</p>
-                  <p>치즈달걀말이 (1.2.5)</p>
-                  <p>소품떡/소스 (2.5.6.10.12.13.15.16)</p>
-                  <p>돌산갓김치 (9)</p>
-                  <p>짜먹는요구르트(딸기) (2)</p>
-                </CardContent>
-              </Card>
+              {meals.map((meal, index) => (
+                <>
+                  <h3 className={`mb-2 text-base font-bold${index != 0 ? 'pt-2' : ''}`} key={index}>
+                    {meals[0].meal_NM == '석식' && index == 1
+                      ? `다음날 ${meal.meal_NM}`
+                      : meal.meal_NM}
+                  </h3>
+                  <Card className='pt-2.5 pb-2.5'>
+                    <CardContent>
+                      {meal.meal.map((dish, index) => (
+                        <p key={index}>{dish}</p>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </>
+              ))}
             </CardContent>
           </Card>
         </div>
