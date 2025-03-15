@@ -1,10 +1,10 @@
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { user } from './user.schema';
-import { item } from './item.schema';
+import { userTable } from './user.schema';
+import { itemTable } from './item.schema';
 import { randomUUID } from 'node:crypto';
 
-export const log = sqliteTable('log', {
+export const logTable = sqliteTable('log', {
   /**
    * uuid
    * @example 'bfc68f45-99c5-4135-b7c5-68bcb8d97972'
@@ -30,14 +30,14 @@ export const log = sqliteTable('log', {
    */
   itemUUID: text('item_uuid')
     .notNull()
-    .references(() => item.uuid),
+    .references(() => itemTable.uuid),
 
   /**
    * 로그 기록한 사용자
    */
   userUUID: text('user_uuid')
     .notNull()
-    .references(() => user.uuid),
+    .references(() => userTable.uuid),
 
   /**
    * 로그 기록한 시간

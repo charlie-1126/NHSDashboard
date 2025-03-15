@@ -7,32 +7,24 @@ import { Label } from '~/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { Link, redirect, useFetcher } from 'react-router';
 import { AiOutlineLoading } from "react-icons/ai";
+import { authenticator, sessionStorage } from '~/auth.server';
 
 export function meta({ }: Route.MetaArgs) {
   return [{ title: 'Signin - NHS Dashboard' }];
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  const data = await request.formData();
-
-  const id = data.get('id')?.toString();
-  const password = data.get('password')?.toString();
-
-  if (!id) {
-    return { errors: { id: 'Id is required' } };
+  try {
+    const user = await authenticator.authenticate('form', request);
+    const session = await sessionStorage.getSession(request.headers.get('cookie'));
+    session.set('user', user.uuid);
+    return redirect('/dashboard', { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error && typeof error.message === 'string' && error.message.startsWith('{')) {
+      return JSON.parse(error.message);
+    }
   }
-
-  if (!password) {
-    return { errors: { password: 'Password is required' } };
-  }
-
-  //TODO : Implement actual login logic
-
-  if (id !== 'admin' || password !== 'admin') {
-    return { errors: { id: 'Invalid id or password', password: 'Invalid id or password' } };
-  }
-
-  return redirect('/dashboard');
 }
 
 export default function SignIn() {

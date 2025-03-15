@@ -2,7 +2,7 @@ import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { randomUUID } from 'node:crypto';
 
-export const user = sqliteTable('user', {
+export const userTable = sqliteTable('user', {
   /**
    * uuid
    */

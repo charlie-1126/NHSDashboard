@@ -1,9 +1,9 @@
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { user } from './user.schema';
+import { userTable } from './user.schema';
 import { randomUUID } from 'node:crypto';
 
-export const item = sqliteTable('item', {
+export const itemTable = sqliteTable('item', {
   /**
    * uuid
    * @example 'bfc68f45-99c5-4135-b7c5-68bcb8d97972'
@@ -29,14 +29,14 @@ export const item = sqliteTable('item', {
    */
   reportHandlerUUID: text('report_handler_uuid')
     .notNull()
-    .references(() => user.uuid),
+    .references(() => userTable.uuid),
 
   /**
    * 인수자 담당자 uuid
    */
   receiverHandlerUUID: text('receiver_handler_uuid')
     .notNull()
-    .references(() => user.uuid),
+    .references(() => userTable.uuid),
 
   /**
    * 분실물 이름
