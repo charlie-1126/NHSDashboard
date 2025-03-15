@@ -28,29 +28,9 @@ export const userTable = sqliteTable('user', {
   password: text().notNull(),
 
   /**
-   * 유저 권한
-   */
-  role: text({ enum: ['ADMIN', 'MODERATOR'] })
-    .notNull()
-    .default('MODERATOR')
-    .$type<'ADMIN' | 'MODERATOR'>(),
-
-  /**
-   * 유저 활성화 여부
-   */
-  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-
-  /**
    * 계정 생성일
    */
   createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .default(sql`(unixepoch())`),
-
-  /**
-   * 계정 수정일
-   */
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(unixepoch())`),
 });

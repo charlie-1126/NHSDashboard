@@ -19,13 +19,6 @@ export const logTable = sqliteTable('log', {
   title: text().notNull(),
 
   /**
-   * 로그 유형
-   */
-  action: text({ enum: ['CREATED', 'UPDATED', 'DISCARDED', 'USER_LOGGED_IN', 'USER_LOGIN_FAILED'] })
-    .notNull()
-    .$type<'CREATE' | 'UPDATE' | 'DELETE'>(),
-
-  /**
    * 분실물 uuid
    */
   itemUUID: text('item_uuid')

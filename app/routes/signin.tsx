@@ -20,7 +20,6 @@ export async function action({ request }: Route.ActionArgs) {
     session.set('user', user.uuid);
     return redirect('/dashboard', { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
   } catch (error) {
-    console.error(error);
     if (error instanceof Error && typeof error.message === 'string' && error.message.startsWith('{')) {
       return JSON.parse(error.message);
     }
