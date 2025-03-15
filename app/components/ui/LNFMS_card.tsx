@@ -1,5 +1,5 @@
 "use client"
-import { CalendarIcon, MapPinIcon, ClockIcon } from "lucide-react"
+import { CalendarIcon, MapPinIcon, ClockIcon, Trash2 } from "lucide-react"
 
 type Feature = {
     title: string
@@ -11,9 +11,10 @@ type Feature = {
 
 interface LNFCardProps {
     feature: Feature
+    onDelete: () => void
 }
 
-export function LNFCard({ feature }: LNFCardProps) {
+export function LNFMSCard({ feature, onDelete }: LNFCardProps) {
     // Format dates to be more readable
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
@@ -32,32 +33,34 @@ export function LNFCard({ feature }: LNFCardProps) {
     const daysRemaining = getDaysRemaining()
 
     return (
-        <div className="flex flex-col overflow-clip rounded-xl border border-border h-full flex-grow">
-            <div className="relative w-full h-7/10 overflow-hidden">
+        <div className="flex flex-row overflow-hidden rounded-xl border border-border relative h-36">
+            <div className="h-full aspect-square">
                 {feature.image ? (
                     <img
-                        src={feature.image || "public/assets/image/noimg.gif"}
+                        src={feature.image || "/public/assets/image/noimg.gif"}
                         alt={feature.title}
-                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        className="h-full w-full object-cover object-center"
                     />
                 ) : (
                     <img
-                        src="public/assets/image/noimg.gif"
+                        src={"/public/assets/image/noimg.gif"}
                         alt={feature.title}
-                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        className="h-full w-full object-cover object-center"
                     />
                 )}
             </div>
-            <div className="px-5 py-2.5 flex-grow">
-                <h3 className="mb-1 text-lg font-semibold md:text-xl">{feature.title}</h3>
-                <div className="space-y-1 text-muted-foreground text-base">
-                    <p className="flex items-center justify-between">
+            <div className="px-4 py-3 flex-grow pr-8">
+                <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
+                <div className="space-y-1 text-muted-foreground text-sm">
+                    <p className="flex items-center">
                         <CalendarIcon className="h-3.5 w-3.5 mr-1.5 flex-shrink-0" />
-                        <span className="flex-grow">
+                        <span>
                             <strong>취득 일자:</strong> {formatDate(feature.dateAcquired)}
                         </span>
+                    </p>
+                    <p className="flex items-center">
                         <MapPinIcon className="h-3.5 w-3.5 mr-1.5 flex-shrink-0" />
-                        <span className="flex-grow">
+                        <span>
                             <strong>취득 장소:</strong> {feature.location}
                         </span>
                     </p>
@@ -70,6 +73,13 @@ export function LNFCard({ feature }: LNFCardProps) {
                     </p>
                 </div>
             </div>
+            <button
+                onClick={onDelete}
+                className="absolute right-3 top-3 p-1.5 rounded-full hover:bg-red-100 text-red-500 transition-colors"
+                aria-label="삭제"
+            >
+                <Trash2 size={16} />
+            </button>
         </div>
     )
 }
