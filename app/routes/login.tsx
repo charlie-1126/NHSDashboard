@@ -20,7 +20,7 @@ export async function action({ request }: Route.ActionArgs) {
     const user = await authenticator.authenticate('form', request);
     const session = await sessionStorage.getSession(request.headers.get('cookie'));
     session.set('user', user.uuid);
-    return redirect('/dashboard', {
+    return redirect('/LNFMS', {
       headers: { 'Set-Cookie': await sessionStorage.commitSession(session) },
     });
   } catch (error) {

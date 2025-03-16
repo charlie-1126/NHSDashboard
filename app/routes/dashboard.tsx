@@ -1,5 +1,5 @@
 import type { Route } from './+types/dashboard';
-import { Dashboard as DashboardComponent } from '../components/Dashboard';
+import { Dashboard as DashboardComponent } from '../components/dashboard';
 import { db, itemTable } from '~/db';
 import { eq } from 'drizzle-orm';
 import { useLoaderData } from 'react-router';

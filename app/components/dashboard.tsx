@@ -3,6 +3,7 @@ import { LNFDashboardCard } from './LNFDashboardCard';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
 import type { itemTable } from '~/db';
+import '../styles/font.css';
 
 export function Dashboard({
   items,
@@ -91,17 +92,11 @@ export function Dashboard({
                   </Card>
                 </div>
               ))}
-              <div className='absolute right-0 bottom-0 m-4'>
-                <Card>
-                  <CardContent>
-                    <p className='text-xl'>
-                      https://주소.com에서 이용하실 수 있습니다. 응애 여긴 니가 해라 ㅋ
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
             </CardContent>
           </Card>
+        </div>
+        <div className='font-custom text-muted-foreground fixed right-5.5 bottom-4 z-50 text-lg'>
+          NHS Dashboard by 이예찬, bmcyver
         </div>
       </div>
     </div>

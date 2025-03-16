@@ -1,13 +1,17 @@
 import { CalendarIcon, MapPinIcon, ClockIcon, Trash2 } from 'lucide-react';
 import { RiUserReceived2Line, RiUserShared2Line } from 'react-icons/ri';
+import { FiBox } from 'react-icons/fi';
+import { FaCheck } from 'react-icons/fa6';
 import type { itemTable } from '~/db';
 import { calculateRemainingDaysAndDate, formatDate } from '~/lib/utils';
 
 interface LNFCardProps {
   item: typeof itemTable.$inferSelect;
   onDelete: () => void;
+  onReturn: () => void;
   onClick?: () => void;
   className?: string;
+  multiple?: boolean;
 }
 
 const statusMap = {
@@ -17,7 +21,14 @@ const statusMap = {
   DELETED: '삭제됨',
 };
 
-export function LNFMSCard({ item, onDelete, onClick, className }: LNFCardProps) {
+export function LNFMSCard({
+  item,
+  onDelete,
+  onReturn,
+  onClick,
+  className,
+  multiple,
+}: LNFCardProps) {
   const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, 7);
 
   return (
@@ -70,7 +81,7 @@ export function LNFMSCard({ item, onDelete, onClick, className }: LNFCardProps) 
               </span>
             </p>
             <p className='flex items-center'>
-              <RiUserReceived2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <FiBox className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
               <span>
                 <strong>상태:</strong> {statusMap[item.status]}
               </span>
@@ -83,10 +94,20 @@ export function LNFMSCard({ item, onDelete, onClick, className }: LNFCardProps) 
           e.stopPropagation();
           onDelete();
         }}
-        className='absolute top-3 right-3 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100'
+        className={`absolute top-3 right-3 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100 ${multiple ? 'invisible' : ''}`}
         aria-label='삭제'
       >
-        <Trash2 size={16} />
+        <Trash2 size={20} />
+      </button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onReturn();
+        }}
+        className={`absolute top-3 right-12 cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100 ${multiple ? 'invisible' : ''}`}
+        aria-label='반환'
+      >
+        <FaCheck size={20} />
       </button>
     </div>
   );
