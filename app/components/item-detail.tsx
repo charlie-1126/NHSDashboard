@@ -5,7 +5,7 @@ import { Label } from './ui/label';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { CalendarIcon, ArrowLeft, Save, X } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
@@ -259,7 +259,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
               )}
               <Input
                 name='receiver'
-                value={formData.receiver}
+                value={formData.receiver ?? ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, receiver: e.target.value }))}
                 placeholder='1101 홍길동'
               />
@@ -292,7 +292,8 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
               취소
             </Button>
             <Button type='submit'>
-              <Save className='mr-2 h-4 w-4' />
+              <Save className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`} />
+              <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
               저장
             </Button>
           </CardFooter>

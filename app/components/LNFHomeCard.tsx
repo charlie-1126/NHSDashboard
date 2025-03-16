@@ -37,7 +37,7 @@ export function LNFHomeCard({ item, onClick }: LNFDashboardCardProps) {
               <strong>취득 장소:</strong> {item.location}
             </span>
           </p>
-          <p className='flex items-center'>
+          <p className='flex items-center pb-1'>
             <ClockIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
             <span className={diffDays <= 3 ? 'text-red-500' : ''}>
               <strong>폐기 일자:</strong> {formatDate(targetDate)}

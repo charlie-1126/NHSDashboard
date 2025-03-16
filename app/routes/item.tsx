@@ -14,8 +14,8 @@ import { unlinkSync } from 'fs';
 
 const itemSchema = z.object({
   uuid: z.union([z.string().uuid(), z.literal('new')]),
-  name: z.string().min(1, '1글자 이상이어야 합니다.').max(30, '30글자 이하여야 합니다.'),
-  location: z.string().min(1, '1글자 이상이어야 합니다.').max(50, '50글자 이하여야 합니다.'),
+  name: z.string().min(1, '1글자 이상 입력해주세요.').max(30, '30글자 이하로 입력해주세요.'),
+  location: z.string().min(1, '1글자 이상 입력해주세요.').max(50, '50글자 이하로 입력해주세요.'),
   createdAt: z
     .string()
     .datetime()
@@ -24,12 +24,15 @@ const itemSchema = z.object({
     .string()
     .datetime()
     .transform((v) => new Date(v)),
-  reporter: z.string().min(1, '1글자 이상이어야 합니다.').max(30, '30글자 이하여야 합니다.'),
+  reporter: z.string().min(1, '1글자 이상 입력해주세요.').max(30, '30글자 이하로 입력해주세요.'),
   receiver: z
     .string()
-    .min(1, '1글자 이상이어야 합니다.')
-    .max(30, '30글자 이하여야 합니다.')
-    .nullish(),
+    .refine((v) => !(v && v.length > 0 && v.length < 2), {
+      message: '1글자 이상 입력해주세요.',
+    })
+    .refine((v) => !(v && v.length > 0 && v.length > 30), {
+      message: '30글자 이하로 입력해주세요.',
+    }),
   status: z.union([
     z.literal('PENDING'),
     z.literal('RETURNED'),
