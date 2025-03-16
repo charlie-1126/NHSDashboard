@@ -28,7 +28,19 @@ type FilterSectionProps = {
 
 export function FilterSection({ filters, setFilters, resetFilters }: FilterSectionProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    checkIsMobile();
+    const handleResize = () => checkIsMobile();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
