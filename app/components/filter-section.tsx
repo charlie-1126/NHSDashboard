@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Input } from './ui/input';
@@ -30,12 +28,24 @@ type FilterSectionProps = {
 
 export function FilterSection({ filters, setFilters, resetFilters }: FilterSectionProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  //필터 적용됨?
+  const isFilterApplied = () => {
+    return (
+      !!filters.startDate ||
+      !!filters.endDate ||
+      !!filters.location ||
+      !!filters.name ||
+      (!!filters.status && filters.status !== 'ALL') ||
+      !!filters.reporter ||
+      !!filters.receiver
+    );
+  };
 
   return (
     <Card className='gap-0 p-0'>
       <CardTitle className='px-3 py-2'>
         <div className='flex items-center justify-between'>
-          <h3 className='text-base'>Filter</h3>
+          <h3 className='text-base'>{isFilterApplied() ? 'Filter *' : 'Filter'}</h3>
           <div className='flex gap-2'>
             <Button
               variant='ghost'

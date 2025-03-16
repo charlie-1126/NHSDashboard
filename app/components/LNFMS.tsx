@@ -53,19 +53,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
     receiver: '',
   });
 
-  //필터 적용됨?
-  const isFilterApplied = () => {
-    return (
-      !!filters.startDate ||
-      !!filters.endDate ||
-      !!filters.location ||
-      !!filters.name ||
-      (!!filters.status && filters.status !== 'ALL') ||
-      !!filters.reporter ||
-      !!filters.receiver
-    );
-  };
-
   // 필터 초기화
   const resetFilters = () => {
     setFilters({
