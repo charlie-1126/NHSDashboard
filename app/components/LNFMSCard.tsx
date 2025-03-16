@@ -10,6 +10,7 @@ interface LNFCardProps {
   onDelete: () => void;
   onReturn: () => void;
   onClick?: () => void;
+  onImageClick?: () => void;
   className?: string;
   multiple?: boolean;
 }
@@ -26,6 +27,7 @@ export function LNFMSCard({
   onDelete,
   onReturn,
   onClick,
+  onImageClick,
   className,
   multiple,
 }: LNFCardProps) {
@@ -34,16 +36,16 @@ export function LNFMSCard({
   return (
     <div
       className={`border-border relative flex h-36 cursor-pointer flex-row overflow-hidden rounded-xl border transition-shadow hover:shadow-lg ${className}`}
-      onClick={onClick}
     >
       <div className='aspect-square h-full'>
         <img
           src={item.image?.length ? item.image : '/image/noImg.gif'}
           alt={item.name}
           className='inset-0 h-full w-full object-cover object-center'
+          onClick={onImageClick}
         />
       </div>
-      <div className='flex-grow px-2.5 py-2 md:px-4 md:py-3 md:pr-8'>
+      <div className='flex-grow px-2.5 py-2 md:px-4 md:py-3 md:pr-8' onClick={onClick}>
         <h3 className='mt-1.5 mb-3 text-sm font-semibold md:mt-0 md:mb-2 md:text-lg'>
           {item.name}
         </h3>

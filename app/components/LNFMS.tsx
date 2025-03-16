@@ -5,6 +5,7 @@ import { Label } from './ui/label';
 import { ArrowLeft, LogOut, Search, Trash2 } from 'lucide-react';
 import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import * as React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
 import {
@@ -40,6 +41,12 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   //에러
   const [error, setError] = React.useState(false);
   const [errorMulti, setErrorMulti] = React.useState(false);
+  //이미지 팝업
+  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+
+  const onImageClick = (item: typeof itemTable.$inferSelect) => {
+    setSelectedImage(item.image?.length ? item.image : '/image/noImg.gif');
+  };
 
   // 필터링
   const [filters, setFilters] = React.useState<FilterValues>({
@@ -258,6 +265,9 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
                   setDeleteIndex(index);
                   setDeleteDialogOpen(true);
                 }}
+                onImageClick={() => {
+                  onImageClick(item);
+                }}
                 className={`cursor-pointer transition-colors ${selectList.includes(index) ? 'bg-blue-50' : ''}`}
                 multiple={multipleSelection}
               />
@@ -408,6 +418,23 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 이미지 팝업 모달 */}
+      <div onClick={() => setSelectedImage(null)}>
+        <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+          <VisuallyHidden>
+            <DialogTitle></DialogTitle>
+          </VisuallyHidden>
+          <DialogContent
+            className='flex h-[70vh] w-[70vw] items-center justify-center !border-none bg-transparent !shadow-none outline-none [&>button]:hidden'
+            aria-describedby={undefined}
+          >
+            {selectedImage && (
+              <img src={selectedImage} className='h-full w-full rounded-md object-contain' />
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }
