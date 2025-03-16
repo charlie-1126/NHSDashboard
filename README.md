@@ -14,13 +14,22 @@
 
 ### 3.1 설치 및 설정
 
-본 프로젝트에서는 데이터를 저장하기 위해서 `sqlite3`와 `drizzle-kit`을 사용합니다. 따라서, 다음과 같은 명령어를 실행하여 필요한 패키지를 설치하고 데이터베이스를 생성해야 합니다.
+본 프로젝트에서는 데이터를 저장하기 위해서 `drizzle-kit`을 사용합니다. 따라서, 다음과 같은 명령어를 실행하여 필요한 패키지를 설치하고 데이터베이스를 생성해야 합니다.
 
 ```bash
 pnpm install
 touch db.db
+pnpm drizzle-kit:generate
 pnpm drizzle-kit:push
 pnpm dev
+```
+
+또한, `.env` 파일을 생성하여 다음과 같은 환경 변수를 설정해야 합니다.
+
+```env
+DATABASE_URL=file:./db.db
+SESSION_SECRET=DO_NOT_USE_IN_PRODUCTION
+STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILES
 ```
 
 ### 3.2 기능 추가 및 수정
@@ -51,5 +60,5 @@ docker compose up --build -d
 
 ## 제작자
 
-- [@charlie-1126](https://github.com/charlie-1126)
-- [@bmcyver](https://github.com/bmcyver)
+- [@charlie-1126](https://github.com/charlie-1126): 프론트엔드
+- [@bmcyver](https://github.com/bmcyver): 백엔드
