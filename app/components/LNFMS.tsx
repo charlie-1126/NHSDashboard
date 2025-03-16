@@ -38,9 +38,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const [multipleDeleteDialogOpen, setMultipleDeleteDialogOpen] = React.useState(false);
   //인수자
   const [receiverName, setReceiverName] = React.useState<string | null>(null);
-  //에러
-  const [error, setError] = React.useState(false);
-  const [errorMulti, setErrorMulti] = React.useState(false);
   //이미지 팝업
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
 
@@ -200,7 +197,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
               {/* 다중 반환 버튼 */}
               <button
                 onClick={() => {
-                  setErrorMulti(false);
                   setMultipleReturnDialogOpen(true);
                 }}
                 className='cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100'
@@ -258,7 +254,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
                 item={item}
                 onReturn={() => {
                   setReturnIndex(index);
-                  setError(false);
                   setReturnDialogOpen(true);
                 }}
                 onDelete={() => {
@@ -312,7 +307,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
             type='id'
             required
             onChange={(name) => setReceiverName(name.target.value)}
-            className={`${error ? 'border-2 border-red-500' : ''}`}
           ></Input>
           <DialogFooter>
             <Button variant='outline' onClick={() => setReturnDialogOpen(false)}>
@@ -321,14 +315,10 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
             <Button
               className='bg-green-500 text-white hover:bg-green-600'
               onClick={() => {
-                if (receiverName) {
-                  returnItem();
-                  setError(false);
-                } else {
-                  setError(true);
-                }
+                returnItem();
               }}
               type='submit'
+              disabled={receiverName ? false : true}
             >
               반환
             </Button>
@@ -353,7 +343,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
             type='id'
             required
             onChange={(name) => setReceiverName(name.target.value)}
-            className={`${errorMulti ? 'border-2 border-red-500' : ''}`}
           ></Input>
           <DialogFooter>
             <Button variant='outline' onClick={() => setMultipleReturnDialogOpen(false)}>
@@ -362,14 +351,10 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
             <Button
               className='bg-green-500 text-white hover:bg-green-600'
               onClick={() => {
-                if (receiverName) {
-                  multipleReturnItem();
-                  setErrorMulti(false);
-                } else {
-                  setErrorMulti(true);
-                }
+                multipleReturnItem();
               }}
               type='submit'
+              disabled={receiverName ? false : true}
             >
               반환
             </Button>
