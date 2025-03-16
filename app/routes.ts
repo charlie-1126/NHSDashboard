@@ -6,4 +6,5 @@ export default [
   route('/dashboard', './routes/dashboard.tsx'),
   route('/LNFMS', './routes/LNFMS.tsx'),
   route('/item/:id', './routes/item.tsx'),
+  route('/static/:id', './routes/static.tsx'),
 ] satisfies RouteConfig;

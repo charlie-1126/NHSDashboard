@@ -21,7 +21,7 @@ export const itemTable = sqliteTable('item', {
    * 인수자 학번 및 이름
    * @example '1102 홍길동'
    */
-  receiver: text().notNull(),
+  receiver: text(),
 
   /**
    * 분실물 이름
@@ -55,7 +55,6 @@ export const itemTable = sqliteTable('item', {
 
   /**
    * 분실물 사진
-   * TODO: 이미지 저장 방식 결정
    */
   image: text().notNull(),
 });

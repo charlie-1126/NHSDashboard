@@ -9,7 +9,7 @@ import { CalendarIcon, ArrowLeft, Save, X } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
-import { useNavigate } from 'react-router';
+import { useFetcher, useNavigate } from 'react-router';
 import type { itemTable } from '~/db';
 
 type ItemDetailProps = {
@@ -21,23 +21,29 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
   const navigate = useNavigate();
   const isNewItem = !id || id === 'new';
 
-  // 현재 날짜를 기본값으로 설정
-  const today = new Date();
+  const fetcher = useFetcher();
 
   // 폼 상태 관리
-  const [formData, setFormData] = React.useState({
-    name: item?.name || '',
-    location: item?.location || '',
-    createAt: item?.createdAt ? new Date(item.createdAt) : today,
-    processedAt: item?.processedAt ? new Date(item.processedAt) : addDays(today, 14),
-    reporter: item?.reporter || '',
-    receiver: item?.receiver || '',
-    status: item?.status || 'PENDING',
-    imageUrl: item?.image || '',
+  const [formData, setFormData] = React.useState<
+    Omit<typeof itemTable.$inferSelect, 'uuid' | 'createdAt' | 'processedAt'> & {
+      uuid: string;
+      createdAt: Date;
+      processedAt: Date;
+    }
+  >({
+    uuid: item?.uuid ?? 'new',
+    name: item?.name ?? '',
+    location: item?.location ?? '',
+    createdAt: item?.createdAt ?? new Date(),
+    processedAt: item?.processedAt ?? addDays(new Date(), 14),
+    reporter: item?.reporter ?? '',
+    receiver: item?.receiver ?? '',
+    status: item?.status ?? 'PENDING',
+    image: item?.image ?? '',
   });
 
   // 이미지 미리보기 상태
-  const [imagePreview, setImagePreview] = React.useState<string | null>(formData.imageUrl || null);
+  const [imagePreview, setImagePreview] = React.useState<string | null>(formData.image ?? null);
 
   // 이미지 업로드 처리
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,23 +64,11 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
     fileInputRef.current?.click();
   };
 
-  // 폼 제출 처리
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    //저장 로직 구현(데이터 formData에 있음)
-    navigate('/LNFMS');
-  };
-
-  // 취소 처리
-  const handleCancel = () => {
-    navigate('/LNFMS');
-  };
-
   return (
     <div className='container mx-auto max-w-3xl p-4'>
       <div className='mb-4 flex items-center'>
         <button
-          onClick={handleCancel}
+          onClick={() => navigate('/LNFMS')}
           className='hover:bg-muted mr-2 cursor-pointer rounded-full p-2 transition-colors'
           aria-label='뒤로 가기'
         >
@@ -83,7 +77,8 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
         <h1 className='text-2xl font-bold'>{isNewItem ? '새 분실물 등록' : '분실물 상세 정보'}</h1>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <fetcher.Form method='post' encType='multipart/form-data'>
+        <input type='hidden' name='uuid' value={formData.uuid} />
         <Card>
           <CardHeader>
             <CardTitle className='text-lg'>기본 정보</CardTitle>
@@ -91,12 +86,12 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
           <CardContent className='space-y-4'>
             {/* 이미지 업로드 */}
             <div className='space-y-2'>
-              <Label htmlFor='image'>사진</Label>
+              <Label>사진</Label>
               <div className='flex flex-col items-center space-y-2'>
                 {imagePreview ? (
                   <div className='relative'>
                     <img
-                      src={imagePreview || '/image/noImg.gif'}
+                      src={imagePreview ?? '/image/noImg.gif'}
                       alt='미리보기'
                       className='h-48 w-48 cursor-pointer rounded-md border-2 border-gray-300 object-cover'
                       onClick={handleImageClick}
@@ -127,9 +122,12 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                     />
                   </div>
                 )}
+                {fetcher.data?.errors?.image && (
+                  <div className='text-[13px] text-red-500'>{fetcher.data.errors.image}</div>
+                )}
                 <input
                   ref={fileInputRef}
-                  id='image-upload'
+                  name='image'
                   type='file'
                   accept='image/*'
                   className='hidden'
@@ -140,29 +138,48 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 이름 */}
             <div className='space-y-2'>
-              <Label htmlFor='name'>이름 *</Label>
+              <Label>이름 *</Label>
               <Input
-                id='name'
+                name='name'
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder='분실물 이름'
                 required
               />
+              {fetcher.data?.errors?.name && (
+                <div className='text-[13px] text-red-500'>{fetcher.data.errors.name}</div>
+              )}
             </div>
 
-            {/* 취득일자 */}
+            {/* 취득장소 */}
             <div className='space-y-2'>
-              <Label htmlFor='createAt'>취득일자 *</Label>
+              <Label>취득장소 *</Label>
+              <Input
+                name='location'
+                value={formData.location}
+                onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
+                placeholder='취득 장소'
+                required
+              />
+              {fetcher.data?.errors?.name && (
+                <div className='text-[13px] text-red-500'>{fetcher.data.errors.name}</div>
+              )}
+            </div>
+
+            {/* 취득 일자 */}
+            <div className='space-y-2'>
+              <Label>취득 일자 *</Label>
+              <input type='hidden' name='createdAt' value={formData.createdAt.toISOString()} />
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    id='createAt'
+                    name='createdAt'
                     variant='outline'
                     className='w-full justify-start text-left font-normal'
                   >
                     <CalendarIcon className='mr-2 h-4 w-4' />
-                    {formData.createAt ? (
-                      format(formData.createAt, 'yyyy년 MM월 dd일', { locale: ko })
+                    {formData.createdAt ? (
+                      format(formData.createdAt, 'yyyy년 MM월 dd일', { locale: ko })
                     ) : (
                       <span>날짜 선택</span>
                     )}
@@ -171,13 +188,13 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                 <PopoverContent className='w-auto p-0'>
                   <Calendar
                     mode='single'
-                    selected={formData.createAt}
+                    selected={formData.createdAt}
                     onSelect={(date) =>
                       date &&
                       setFormData((prev) => ({
                         ...prev,
-                        createAt: date,
-                        processedAt: addDays(date, 14),
+                        createdAt: date,
+                        processedAt: prev.processedAt ? prev.processedAt : addDays(date, 14),
                       }))
                     }
                     initialFocus
@@ -187,25 +204,14 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
               </Popover>
             </div>
 
-            {/* 취득장소 */}
+            {/* 폐기 일자 */}
             <div className='space-y-2'>
-              <Label htmlFor='location'>취득장소 *</Label>
-              <Input
-                id='location'
-                value={formData.location}
-                onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
-                placeholder='취득 장소'
-                required
-              />
-            </div>
-
-            {/* 폐기일자 */}
-            <div className='space-y-2'>
-              <Label htmlFor='processedAt'>폐기일자 *</Label>
+              <Label>폐기 일자 *</Label>
+              <input type='hidden' name='processedAt' value={formData.processedAt.toISOString()} />
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    id='processedAt'
+                    name='processedAt'
                     variant='outline'
                     className='w-full justify-start text-left font-normal'
                   >
@@ -233,29 +239,36 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 제보자 */}
             <div className='space-y-2'>
-              <Label htmlFor='reporter'>제보자</Label>
+              <Label>제보자</Label>
+              {fetcher.data?.errors?.reporter && (
+                <div className='text-[13px] text-red-500'>{fetcher.data.errors.reporter}</div>
+              )}
               <Input
-                id='reporter'
+                name='reporter'
                 value={formData.reporter}
                 onChange={(e) => setFormData((prev) => ({ ...prev, reporter: e.target.value }))}
-                placeholder='제보자 이름'
+                placeholder='1101 홍길동'
               />
             </div>
 
             {/* 인수자 */}
             <div className='space-y-2'>
-              <Label htmlFor='receiver'>인수자</Label>
+              <Label>인수자</Label>
+              {fetcher.data?.errors?.receiver && (
+                <div className='text-[13px] text-red-500'>{fetcher.data.errors.receiver}</div>
+              )}
               <Input
-                id='receiver'
+                name='receiver'
                 value={formData.receiver}
                 onChange={(e) => setFormData((prev) => ({ ...prev, receiver: e.target.value }))}
-                placeholder='인수자 이름'
+                placeholder='1101 홍길동'
               />
             </div>
 
             {/* 상태 */}
             <div className='space-y-2'>
-              <Label htmlFor='status'>상태 *</Label>
+              <Label>상태 *</Label>
+              <input type='hidden' name='status' value={formData.status} />
               <Select
                 value={formData.status}
                 onValueChange={(value: 'PENDING' | 'RETURNED' | 'DISCARDED' | 'DELETED') =>
@@ -266,7 +279,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                   <SelectValue placeholder='상태 선택' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='PENDING'>대기중</SelectItem>
+                  <SelectItem value='PENDING'>보관중</SelectItem>
                   <SelectItem value='RETURNED'>반환됨</SelectItem>
                   <SelectItem value='DISCARDED'>폐기됨</SelectItem>
                   <SelectItem value='DELETED'>삭제됨</SelectItem>
@@ -275,7 +288,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
             </div>
           </CardContent>
           <CardFooter className='flex justify-between'>
-            <Button type='button' variant='outline' onClick={handleCancel}>
+            <Button type='button' variant='outline' onClick={() => navigate('/LNFMS')}>
               취소
             </Button>
             <Button type='submit'>
@@ -284,7 +297,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
             </Button>
           </CardFooter>
         </Card>
-      </form>
+      </fetcher.Form>
     </div>
   );
 }

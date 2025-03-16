@@ -6,7 +6,7 @@ import { ArrowLeft, LogOut, Search, Trash2 } from 'lucide-react';
 import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
 import * as React from 'react';
-import { NavLink, useNavigate } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,6 @@ import {
 import { Button } from './ui/button';
 import type { itemTable } from '~/db';
 import { FilterSection, type FilterValues } from './filter-section';
-import { el } from 'date-fns/locale';
 
 export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const navigate = useNavigate();
@@ -285,13 +284,13 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
       </Card>
 
       {/* Create 플로팅 버튼 */}
-      <button
+      <Link
+        to='/item/new'
         className='fixed right-10 bottom-10 z-50 flex cursor-pointer items-center justify-center rounded-full bg-blue-400 p-3.5 text-white shadow-lg transition-colors hover:bg-blue-500 hover:shadow-sm'
         aria-label='Create'
-        onClick={create}
       >
         <LuPlus size={24} />
-      </button>
+      </Link>
 
       {/* 모달 */}
 

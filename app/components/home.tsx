@@ -3,8 +3,7 @@ import { LNFHomeCard } from './LNFHomeCard';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Dialog, DialogContent } from './ui/dialog';
 import type { itemTable } from '~/db';
-import { Button } from 'react-day-picker';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -41,16 +40,16 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogContent>
         </Dialog>
       </div>
-      <NavLink to='/dashboard'>
+      <Link to='/dashboard'>
         <div className='text-muted-foreground absolute top-12 left-10 z-50 hidden text-sm lg:block'>
           Dashboard로 전환
         </div>
-      </NavLink>
-      <NavLink to='/LNFMS'>
+      </Link>
+      <Link to='/LNFMS'>
         <div className='text-muted-foreground absolute top-5 right-7 z-50 text-sm md:top-12 md:right-10'>
           LNFMS
         </div>
-      </NavLink>
+      </Link>
     </div>
   );
 }
