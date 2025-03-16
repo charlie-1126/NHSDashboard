@@ -15,8 +15,6 @@ export function meta({}: Route.MetaArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     const user = await authenticator.authenticate('form', request);
     const session = await sessionStorage.getSession(request.headers.get('cookie'));
     session.set('user', user.uuid);
@@ -32,6 +30,8 @@ export async function action({ request }: Route.ActionArgs) {
       return JSON.parse(error.message);
     }
   }
+
+  return redirect('/login');
 }
 
 export default function Login() {

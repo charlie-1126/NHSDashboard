@@ -157,10 +157,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
     navigate('/item/new');
   };
 
-  const handleLogout = () => {
-    // 로그아웃 로직
-  };
-
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
@@ -235,15 +231,13 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
             </button>
 
             {/* 로그아웃 버튼 */}
-            <NavLink to='/login'>
-              <button
-                onClick={handleLogout}
-                className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors'
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
-            </NavLink>
+            <Link
+              to='/login'
+              className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors'
+            >
+              <LogOut size={18} />
+              Logout
+            </Link>
           </div>
         </CardHeader>
 
