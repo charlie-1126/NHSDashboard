@@ -227,7 +227,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
 
             {/* 로그아웃 버튼 */}
             <Link
-              to='/login'
+              to='/logout'
               className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors'
             >
               <LogOut size={18} />
