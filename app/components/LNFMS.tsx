@@ -152,11 +152,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
     setMultipleReturnDialogOpen(false);
   };
 
-  const create = () => {
-    // 새 분실물 등록 페이지로 이동
-    navigate('/item/new');
-  };
-
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
@@ -171,9 +166,9 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   };
 
   return (
-    <div className='flex h-screen flex-col p-4'>
+    <div className='flex h-screen flex-col p-2 md:p-4'>
       <Card className='flex h-full flex-col gap-4'>
-        <CardHeader className='flex flex-row items-center justify-between space-y-0'>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 px-2.5 pr-5 md:px-6'>
           <div className='flex items-center gap-2'>
             {/* 뒤로가기 버튼 */}
             <NavLink to='/'>
@@ -189,7 +184,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <div className='flex items-center gap-4'>
             {/* 다중선택시 나오는 구역 */}
             <div
-              className={`flex gap-2 transition-all duration-300 ease-out ${
+              className={`flex gap-0 transition-all duration-300 ease-out md:gap-2 ${
                 multipleSelection
                   ? 'translate-x-3 opacity-100'
                   : 'pointer-events-none translate-x-10 opacity-0'
@@ -242,12 +237,12 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
         </CardHeader>
 
         {/* 필터 섹션 */}
-        <CardContent className='pt-0 pb-0'>
+        <CardContent className='px-2 py-0 md:px-6'>
           <FilterSection filters={filters} setFilters={setFilters} resetFilters={resetFilters} />
         </CardContent>
 
         {/* 분실물 카드 */}
-        <CardContent className='flex-1 space-y-4 overflow-y-auto pb-4'>
+        <CardContent className='flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6'>
           {filteredItems.length > 0 ? (
             filteredItems.map((item, index) => (
               <LNFMSCard

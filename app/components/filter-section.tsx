@@ -28,6 +28,14 @@ type FilterSectionProps = {
 
 export function FilterSection({ filters, setFilters, resetFilters }: FilterSectionProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   //필터 적용됨?
   const isFilterApplied = () => {
     return (
@@ -43,10 +51,10 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
 
   return (
     <Card className='gap-0 p-0'>
-      <CardTitle className='px-3 py-2'>
+      <CardTitle className='px-3 py-1 md:py-2'>
         <div className='flex items-center justify-between'>
           <h3 className='text-base'>{isFilterApplied() ? 'Filter *' : 'Filter'}</h3>
-          <div className='flex gap-2'>
+          <div className='flex gap-0 md:gap-2'>
             <Button
               variant='ghost'
               size='sm'
@@ -68,7 +76,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
         </div>
       </CardTitle>
       {isExpanded && (
-        <CardContent className='grid grid-cols-3 gap-3 p-3'>
+        <CardContent className='grid grid-cols-3 gap-1.5 px-2 py-1 md:gap-3 md:p-3'>
           <div className='space-y-1'>
             <Label htmlFor='name' className='text-xs'>
               이름
@@ -78,7 +86,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               placeholder='이름 검색'
               value={filters.name}
               onChange={(e) => setFilters((prev) => ({ ...prev, name: e.target.value }))}
-              className='h-8 text-sm'
+              className='h-8 text-xs md:text-sm'
             />
           </div>
 
@@ -91,11 +99,13 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
                 <Button
                   id='date-from'
                   variant='outline'
-                  className='h-8 w-full justify-start text-left text-sm font-normal'
+                  className='h-8 w-full justify-start text-left text-xs font-normal md:text-sm'
                 >
                   <CalendarIcon className='mr-2 h-3.5 w-3.5' />
                   {filters.startDate ? (
-                    format(filters.startDate, 'yyyy년 MM월 dd일', { locale: ko })
+                    format(filters.startDate, isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일', {
+                      locale: ko,
+                    })
                   ) : (
                     <span>날짜 선택</span>
                   )}
@@ -121,11 +131,13 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
                 <Button
                   id='date-to'
                   variant='outline'
-                  className='h-8 w-full justify-start text-left text-sm font-normal'
+                  className='h-8 w-full justify-start text-left text-xs font-normal md:text-sm'
                 >
                   <CalendarIcon className='mr-2 h-3.5 w-3.5' />
                   {filters.endDate ? (
-                    format(filters.endDate, 'yyyy년 MM월 dd일', { locale: ko })
+                    format(filters.endDate, isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일', {
+                      locale: ko,
+                    })
                   ) : (
                     <span>날짜 선택</span>
                   )}
@@ -151,7 +163,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               placeholder='제보자 검색'
               value={filters.reporter}
               onChange={(e) => setFilters((prev) => ({ ...prev, reporter: e.target.value }))}
-              className='h-8 text-sm'
+              className='h-8 text-xs md:text-sm'
             />
           </div>
 
@@ -164,7 +176,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               placeholder='인수자 검색'
               value={filters.receiver}
               onChange={(e) => setFilters((prev) => ({ ...prev, receiver: e.target.value }))}
-              className='h-8 text-sm'
+              className='h-8 text-xs md:text-sm'
             />
           </div>
 
@@ -177,7 +189,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               placeholder='위치 검색'
               value={filters.location}
               onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
-              className='h-8 text-sm'
+              className='h-8 text-xs md:text-sm'
             />
           </div>
 
@@ -189,7 +201,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               value={filters.status}
               onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}
             >
-              <SelectTrigger id='status' className='h-8 text-sm'>
+              <SelectTrigger id='status' className='h-8 text-xs md:text-sm'>
                 <SelectValue placeholder='상태 선택' />
               </SelectTrigger>
               <SelectContent>

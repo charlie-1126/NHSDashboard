@@ -43,47 +43,55 @@ export function LNFMSCard({
           className='inset-0 h-full w-full object-cover object-center'
         />
       </div>
-      <div className='flex-grow px-4 py-3 pr-8'>
-        <h3 className='mb-2 text-lg font-semibold'>{item.name}</h3>
+      <div className='flex-grow px-2.5 py-2 md:px-4 md:py-3 md:pr-8'>
+        <h3 className='mt-1.5 mb-3 text-sm font-semibold md:mt-0 md:mb-2 md:text-lg'>
+          {item.name}
+        </h3>
         <div className='flex gap-7'>
           <div className='text-muted-foreground space-y-1 text-sm'>
             <p className='flex items-center'>
-              <CalendarIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <CalendarIcon className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span>
-                <strong>취득 일자:</strong> {formatDate(item.createdAt)}
+                <strong className='hidden md:inline'>취득 일자: </strong>
+                {formatDate(item.createdAt)}
               </span>
             </p>
             <p className='flex items-center'>
-              <MapPinIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <MapPinIcon className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span>
-                <strong>취득 장소:</strong> {item.location}
+                <strong className='hidden md:inline'>취득 장소: </strong>
+                {item.location}
               </span>
             </p>
             <p className='flex items-center'>
-              <ClockIcon className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <ClockIcon className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span className={diffDays <= 3 ? 'text-red-500' : ''}>
-                <strong>폐기 일자:</strong> {formatDate(targetDate)}
-                <span className='ml-1 font-medium'>({diffDays}일 남음)</span>
+                <strong className='hidden md:inline'>폐기 일자: </strong>
+                {formatDate(targetDate)}
+                <span className='ml-1 hidden font-medium md:inline'>({diffDays}일 남음)</span>
               </span>
             </p>
           </div>
           <div className='text-muted-foreground space-y-1 text-sm'>
             <p className='flex items-center'>
-              <RiUserShared2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <RiUserShared2Line className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span>
-                <strong>제보자:</strong> {item.reporter}
+                <strong className='hidden md:inline'>제보자: </strong>
+                {item.reporter}
               </span>
             </p>
             <p className='flex items-center'>
-              <RiUserReceived2Line className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <RiUserReceived2Line className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span>
-                <strong>인수자:</strong> {item.receiver}
+                <strong className='hidden md:inline'>인수자: </strong>
+                {item.receiver}
               </span>
             </p>
             <p className='flex items-center'>
-              <FiBox className='mr-1.5 h-3.5 w-3.5 flex-shrink-0' />
+              <FiBox className='mr-0.5 h-3.5 w-3.5 flex-shrink-0 md:mr-1.5' />
               <span>
-                <strong>상태:</strong> {statusMap[item.status]}
+                <strong className='hidden md:inline'>상태: </strong>
+                {statusMap[item.status]}
               </span>
             </p>
           </div>
@@ -94,7 +102,7 @@ export function LNFMSCard({
           e.stopPropagation();
           onDelete();
         }}
-        className={`absolute top-3 right-3 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100 ${multiple ? 'invisible' : ''}`}
+        className={`absolute top-1 right-2 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100 md:top-3 md:right-3 ${multiple ? 'invisible' : ''}`}
         aria-label='삭제'
       >
         <Trash2 size={20} />
@@ -104,7 +112,7 @@ export function LNFMSCard({
           e.stopPropagation();
           onReturn();
         }}
-        className={`absolute top-3 right-12 cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100 ${multiple ? 'invisible' : ''}`}
+        className={`absolute top-1 right-10 cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100 md:top-3 md:right-12 ${multiple ? 'invisible' : ''}`}
         aria-label='반환'
       >
         <FaCheck size={20} />
