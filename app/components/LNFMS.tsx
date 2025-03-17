@@ -248,7 +248,9 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </CardContent>
 
           {/* 분실물 카드 */}
-          <CardContent className='flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6'>
+          <CardContent
+            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${filteredItems.length > 0 ? '' : 'flex items-center justify-center'}`}
+          >
             {filteredItems.length > 0 ? (
               filteredItems.map((item, index) => (
                 <LNFMSCard
@@ -271,7 +273,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
                 />
               ))
             ) : (
-              <div className='text-muted-foreground flex flex-col items-center justify-center py-10 text-center'>
+              <div className='text-muted-foreground flex flex-col items-center justify-center pb-15 text-center'>
                 <Search className='mb-2 h-10 w-10 opacity-20' />
                 <p>검색 결과가 없습니다</p>
                 <p className='text-sm'>필터를 조정하거나 초기화해 보세요</p>
