@@ -63,14 +63,22 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
 
   return (
     <Card className='gap-0 p-0'>
-      <CardTitle className='px-3 py-1 md:py-2'>
+      <CardTitle
+        className='px-3 py-1 md:py-2'
+        onClick={() => {
+          setIsExpanded(!isExpanded);
+        }}
+      >
         <div className='flex items-center justify-between'>
           <h3 className='text-base'>{isFilterApplied() ? 'Filter *' : 'Filter'}</h3>
           <div className='flex gap-0 md:gap-2'>
             <Button
               variant='ghost'
               size='sm'
-              onClick={resetFilters}
+              onClick={(e) => {
+                e.stopPropagation();
+                resetFilters();
+              }}
               className='text-muted-foreground h-7 px-2 text-xs'
             >
               <FilterX size={14} className='mr-1' />
