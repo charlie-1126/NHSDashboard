@@ -161,40 +161,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   }, [itemsList, filters]);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
-  // 단일 삭제
-  const deleteItem = () => {
-    if (deleteIndex !== null) {
-      setItemsList(itemsList.filter((_, i) => i !== deleteIndex));
-      setDeleteIndex(null);
-    }
-    setDeleteDialogOpen(false);
-  };
-
-  // 단일 반환
-  const returnItem = () => {
-    if (returnIndex !== null) {
-      setItemsList(itemsList.filter((_, i) => i !== returnIndex));
-      setReturnIndex(null);
-    }
-    setReturnDialogOpen(false);
-  };
-
-  // 다중 삭제 처리
-  const multipleDeleteItem = () => {
-    setItemsList(itemsList.filter((_, i) => !selectList.includes(i)));
-    setSelectList([]);
-    setMultipleSelection(false);
-    setMultipleDeleteDialogOpen(false);
-  };
-
-  // 다중 반환 처리
-  const multipleReturnItem = () => {
-    setItemsList(itemsList.filter((_, i) => !selectList.includes(i)));
-    setSelectList([]);
-    setMultipleSelection(false);
-    setMultipleReturnDialogOpen(false);
-  };
-
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
@@ -207,7 +173,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
       setSelectList(copy);
     }
   };
-
   return (
     <div className='flex h-screen flex-col p-2 md:p-4 md:pb-2'>
       <div className='flex-1 overflow-y-auto'>
