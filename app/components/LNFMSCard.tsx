@@ -31,7 +31,7 @@ export function LNFMSCard({
   className,
   multiple,
 }: LNFCardProps) {
-  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, 7);
+  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, item.processedAt);
 
   return (
     <div

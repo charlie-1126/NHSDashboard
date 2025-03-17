@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle } from 'lucide-react';
-import { format, addDays } from 'date-fns';
+import { format, add } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
 import { useFetcher, useNavigate } from 'react-router';
@@ -35,7 +35,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
     name: item?.name ?? '',
     location: item?.location ?? '',
     createdAt: item?.createdAt ?? new Date(),
-    processedAt: item?.processedAt ?? addDays(new Date(), 14),
+    processedAt: item?.processedAt ?? add(new Date(), { months: 1 }),
     reporter: item?.reporter ?? '',
     receiver: item?.receiver ?? '',
     status: item?.status ?? 'PENDING',
@@ -194,7 +194,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                       setFormData((prev) => ({
                         ...prev,
                         createdAt: date,
-                        processedAt: prev.processedAt ? prev.processedAt : addDays(date, 14),
+                        processedAt: add(date, { months: 1 }),
                       }))
                     }
                     initialFocus

@@ -8,7 +8,7 @@ interface LNFDashboardCardProps {
 }
 
 export function LNFHomeCard({ item, onClick }: LNFDashboardCardProps) {
-  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, 7);
+  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, item.processedAt);
 
   return (
     <div

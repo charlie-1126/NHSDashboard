@@ -3,7 +3,7 @@ import type { itemTable } from '~/db';
 import { formatDate, calculateRemainingDaysAndDate } from '~/lib/utils';
 
 export function LNFDashboardCard({ item }: { item: typeof itemTable.$inferSelect }) {
-  const { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, 7);
+  let { diffDays, targetDate } = calculateRemainingDaysAndDate(item.createdAt, item.processedAt);
 
   return (
     <div className='border-border flex h-full flex-grow flex-col overflow-clip rounded-xl border'>
