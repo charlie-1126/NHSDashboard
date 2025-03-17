@@ -6,9 +6,8 @@
 
 ## 2. 기능
 
-- [ ] 분실물 관리 시스템
-- [ ] 분실물 조회 시스템
-- [ ] 급식 조회 시스템
+- [x] 분실물 조회 및 관리 시스템
+- [x] 급식 조회 시스템
 
 ## 3. 개발 및 관리 가이드
 
@@ -27,9 +26,10 @@ pnpm dev
 또한, `.env` 파일을 생성하여 다음과 같은 환경 변수를 설정해야 합니다.
 
 ```env
-DATABASE_URL=file:./db.db
+DATABASE_URL=file:ABSOLUTE_PATH_TO_DB_FILE
 SESSION_SECRET=DO_NOT_USE_IN_PRODUCTION
-STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILES
+STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILE_DIRECTORY
+NEIS_API_KEY=YOUR_NEIS_API_KEY
 ```
 
 ### 3.2. 기능 추가 및 수정

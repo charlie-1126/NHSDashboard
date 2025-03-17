@@ -2,7 +2,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { normalize, sep, join } from 'node:path';
 import type { Route } from './+types/static';
 
-if (!process.env.STATIC_FILE_PATH) {
+if (!import.meta.env.STATIC_FILE_PATH) {
   throw new Error('STATIC_FILE_PATH is not set');
 }
 
@@ -44,7 +44,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   if (/(?:^|[\\/])\.\.(?:[\\/]|$)/.test(path) || path.includes('..'))
     return new Response('Forbidden', { status: 404 });
 
-  path = normalize(join(process.env.STATIC_FILE_PATH!, path));
+  path = normalize(join(import.meta.env.STATIC_FILE_PATH!, path));
 
   if (containsDotFile(normalize(path).split(sep)))
     return new Response('Not Found', { status: 404 });
