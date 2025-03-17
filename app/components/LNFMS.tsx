@@ -164,9 +164,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   }, [itemsList, filters]);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
-  {
-    /* 파라미터 업데이트 */
-  }
+  // 파라미터 업데이트
   React.useEffect(() => {
     if (pageParam) {
       const pageNumber = Number(pageParam);
