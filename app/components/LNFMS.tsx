@@ -161,6 +161,12 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   }, [itemsList, filters]);
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
+  const showItems = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredItems.slice(startIndex, endIndex);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
@@ -249,10 +255,10 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
 
           {/* 분실물 카드 */}
           <CardContent
-            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${filteredItems.length > 0 ? '' : 'flex items-center justify-center'}`}
+            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${showItems.length > 0 ? '' : 'flex items-center justify-center'}`}
           >
-            {filteredItems.length > 0 ? (
-              filteredItems.map((item, index) => (
+            {showItems.length > 0 ? (
+              showItems.map((item, index) => (
                 <LNFMSCard
                   onClick={() => cardClick(index)}
                   key={index}
