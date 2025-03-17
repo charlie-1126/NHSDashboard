@@ -7,7 +7,7 @@ import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import * as React from 'react';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { Link, useFetcher, useNavigate } from 'react-router';
 import {
   Dialog,
   DialogContent,
@@ -19,9 +19,11 @@ import {
 import { Button } from './ui/button';
 import type { itemTable } from '~/db';
 import { FilterSection, type FilterValues } from './filter-section';
+import type { action } from '~/routes/LNFMS';
 
 export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const navigate = useNavigate();
+  const fetcher = useFetcher<typeof action>();
 
   //분실물 리스트
   const [itemsList, setItemsList] = React.useState(items);
@@ -44,6 +46,29 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const onImageClick = (item: typeof itemTable.$inferSelect) => {
     setSelectedImage(item.image?.length ? item.image : '/image/noImg.gif');
   };
+
+  React.useEffect(() => {
+    if (fetcher.data && fetcher.data.ok && fetcher.data.type) {
+      switch (fetcher.data.type) {
+        case 'deleteItem':
+          setDeleteDialogOpen(false);
+          break;
+        case 'deleteItems':
+          setMultipleDeleteDialogOpen(false);
+          setSelectList([]);
+          setMultipleSelection(false);
+          break;
+        case 'returnItem':
+          setReturnDialogOpen(false);
+          break;
+        case 'returnItems':
+          setSelectList([]);
+          setMultipleSelection(false);
+          setMultipleReturnDialogOpen(false);
+          break;
+      }
+    }
+  }, [fetcher.data]);
 
   // 필터링
   const [filters, setFilters] = React.useState<FilterValues>({
@@ -122,40 +147,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
     });
   }, [itemsList, filters]);
 
-  // 단일 삭제
-  const deleteItem = () => {
-    if (deleteIndex !== null) {
-      setItemsList(itemsList.filter((_, i) => i !== deleteIndex));
-      setDeleteIndex(null);
-    }
-    setDeleteDialogOpen(false);
-  };
-
-  // 단일 반환
-  const returnItem = () => {
-    if (returnIndex !== null) {
-      setItemsList(itemsList.filter((_, i) => i !== returnIndex));
-      setReturnIndex(null);
-    }
-    setReturnDialogOpen(false);
-  };
-
-  // 다중 삭제 처리
-  const multipleDeleteItem = () => {
-    setItemsList(itemsList.filter((_, i) => !selectList.includes(i)));
-    setSelectList([]);
-    setMultipleSelection(false);
-    setMultipleDeleteDialogOpen(false);
-  };
-
-  // 다중 반환 처리
-  const multipleReturnItem = () => {
-    setItemsList(itemsList.filter((_, i) => !selectList.includes(i)));
-    setSelectList([]);
-    setMultipleSelection(false);
-    setMultipleReturnDialogOpen(false);
-  };
-
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
@@ -175,14 +166,12 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
         <CardHeader className='flex flex-row items-center justify-between space-y-0 px-2.5 pr-5 md:px-6'>
           <div className='flex items-center gap-2'>
             {/* 뒤로가기 버튼 */}
-            <NavLink to='/'>
-              <button
-                className='hover:bg-muted cursor-pointer rounded-full p-2 transition-colors'
-                aria-label='뒤로 가기'
-              >
-                <ArrowLeft size={20} />
-              </button>
-            </NavLink>
+            <Link
+              to='/'
+              className='hover:bg-muted cursor-pointer rounded-full p-2 transition-colors'
+            >
+              <ArrowLeft size={20} />
+            </Link>
             <CardTitle className='text-2xl'>LNFMS</CardTitle>
           </div>
           <div className='flex items-center gap-4'>
@@ -281,7 +270,6 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
       <Link
         to='/item/new'
         className='fixed right-10 bottom-10 z-50 flex cursor-pointer items-center justify-center rounded-full bg-blue-400 p-3.5 text-white shadow-lg transition-colors hover:bg-blue-500 hover:shadow-sm'
-        aria-label='Create'
       >
         <LuPlus size={24} />
       </Link>
@@ -302,27 +290,28 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <div className='pt-1'>
             <Label>인수자</Label>
           </div>
-          <Input
-            name='recieverName'
-            type='id'
-            required
-            onChange={(name) => setReceiverName(name.target.value)}
-          ></Input>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setReturnDialogOpen(false)}>
-              취소
-            </Button>
-            <Button
-              className='bg-green-500 text-white hover:bg-green-600'
-              onClick={() => {
-                returnItem();
-              }}
-              type='submit'
-              disabled={receiverName ? false : true}
-            >
-              반환
-            </Button>
-          </DialogFooter>
+          <fetcher.Form method='post'>
+            <input type='hidden' name='uuid' value={itemsList[returnIndex!]?.uuid} />
+            <input type='hidden' name='type' value='returnItem' />
+            <Input
+              name='reciever'
+              type='id'
+              required
+              onChange={(name) => setReceiverName(name.target.value)}
+            ></Input>
+            <DialogFooter className='pt-3'>
+              <Button variant='outline' onClick={() => setReturnDialogOpen(false)}>
+                취소
+              </Button>
+              <Button
+                className='bg-green-500 text-white hover:bg-green-600'
+                type='submit'
+                disabled={receiverName ? false : true}
+              >
+                반환
+              </Button>
+            </DialogFooter>
+          </fetcher.Form>
         </DialogContent>
       </Dialog>
 
@@ -338,27 +327,28 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <div className='pt-1'>
             <Label>인수자</Label>
           </div>
-          <Input
-            name='recieverName'
-            type='id'
-            required
-            onChange={(name) => setReceiverName(name.target.value)}
-          ></Input>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setMultipleReturnDialogOpen(false)}>
-              취소
-            </Button>
-            <Button
-              className='bg-green-500 text-white hover:bg-green-600'
-              onClick={() => {
-                multipleReturnItem();
-              }}
-              type='submit'
-              disabled={receiverName ? false : true}
-            >
-              반환
-            </Button>
-          </DialogFooter>
+          <fetcher.Form method='post'>
+            <input type='hidden' name='uuids' value={selectList.map((i) => itemsList[i].uuid)} />
+            <input type='hidden' name='type' value='returnItems' />
+            <Input
+              name='reciever'
+              type='id'
+              required
+              onChange={(name) => setReceiverName(name.target.value)}
+            ></Input>
+            <DialogFooter className='pt-3'>
+              <Button variant='outline' onClick={() => setMultipleReturnDialogOpen(false)}>
+                취소
+              </Button>
+              <Button
+                className='bg-green-500 text-white hover:bg-green-600'
+                type='submit'
+                disabled={receiverName ? false : true}
+              >
+                반환
+              </Button>
+            </DialogFooter>
+          </fetcher.Form>
         </DialogContent>
       </Dialog>
 
@@ -373,14 +363,18 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
                 : '이 항목을 삭제하시겠습니까?'}
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
-              취소
-            </Button>
-            <Button variant='destructive' onClick={deleteItem}>
-              삭제
-            </Button>
-          </DialogFooter>
+          <fetcher.Form method='post'>
+            <DialogFooter>
+              <input type='hidden' name='uuid' value={itemsList[deleteIndex!]?.uuid} />
+              <input type='hidden' name='type' value='deleteItem' />
+              <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
+                취소
+              </Button>
+              <Button type='submit' variant='destructive'>
+                삭제
+              </Button>
+            </DialogFooter>
+          </fetcher.Form>
         </DialogContent>
       </Dialog>
 
@@ -393,14 +387,18 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
               선택한 {selectList.length}개의 항목들을 삭제하시겠습니까?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setMultipleDeleteDialogOpen(false)}>
-              취소
-            </Button>
-            <Button variant='destructive' onClick={multipleDeleteItem}>
-              삭제
-            </Button>
-          </DialogFooter>
+          <fetcher.Form method='post'>
+            <DialogFooter>
+              <input type='hidden' name='uuids' value={selectList.map((i) => itemsList[i].uuid)} />
+              <input type='hidden' name='type' value='deleteItems' />
+              <Button variant='outline' onClick={() => setMultipleDeleteDialogOpen(false)}>
+                취소
+              </Button>
+              <Button type='submit' variant='destructive'>
+                삭제
+              </Button>
+            </DialogFooter>
+          </fetcher.Form>
         </DialogContent>
       </Dialog>
 
@@ -410,10 +408,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <VisuallyHidden>
             <DialogTitle></DialogTitle>
           </VisuallyHidden>
-          <DialogContent
-            className='flex h-[70vh] w-[70vw] items-center justify-center !border-none bg-transparent !shadow-none outline-none [&>button]:hidden'
-            aria-describedby={undefined}
-          >
+          <DialogContent className='flex h-[70vh] w-[70vw] items-center justify-center !border-none bg-transparent !shadow-none outline-none [&>button]:hidden'>
             {selectedImage && (
               <img src={selectedImage} className='h-full w-full rounded-md object-contain' />
             )}

@@ -10,6 +10,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
+  console.log('loader!');
+
   let session = await sessionStorage.getSession(request.headers.get('cookie'));
   let user = session.get('user');
   if (!user) return redirect('/login');
@@ -17,6 +19,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   const items = await db.select().from(itemTable);
 
   return { items };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+
+  console.log('formData', formData);
+
+  return { ok: true, type: formData.get('type') };
 }
 
 export default function home() {
