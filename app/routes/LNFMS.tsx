@@ -14,7 +14,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   let user = session.get('user');
   if (!user) return redirect('/login');
 
-  const items = await db.select().from(itemTable).where(eq(itemTable.status, 'PENDING'));
+  const items = await db.select().from(itemTable);
 
   return { items };
 }

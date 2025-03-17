@@ -218,7 +218,7 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value='ALL'>전체</SelectItem>
-                <SelectItem value='PENDING'>대기중</SelectItem>
+                <SelectItem value='PENDING'>보관중</SelectItem>
                 <SelectItem value='RETURNED'>반환됨</SelectItem>
                 <SelectItem value='DISCARDED'>폐기됨</SelectItem>
                 <SelectItem value='DELETED'>삭제됨</SelectItem>

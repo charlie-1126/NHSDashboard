@@ -16,7 +16,7 @@ interface LNFCardProps {
 }
 
 const statusMap = {
-  PENDING: '대기중',
+  PENDING: '보관중',
   RETURNED: '반환됨',
   DISCARDED: '폐기됨',
   DELETED: '삭제됨',
