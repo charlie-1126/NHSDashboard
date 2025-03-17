@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LNFMSCard } from './LNFMSCard';
 import { Input } from './ui/input';
@@ -53,8 +54,10 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
 
   //페이지
-  const [currentPage, setCurrentPage] = React.useState<number>(1);
   const itemsPerPage = 10;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = searchParams.get('page');
+  const [currentPage, setCurrentPage] = React.useState(pageParam ? Number(pageParam) : 1);
 
   const onImageClick = (item: typeof itemTable.$inferSelect) => {
     setSelectedImage(item.image?.length ? item.image : '/image/noImg.gif');
@@ -160,6 +163,31 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
     });
   }, [itemsList, filters]);
   const totalPages = Math.ceil(items.length / itemsPerPage);
+
+  {
+    /* 파라미터 업데이트 */
+  }
+  React.useEffect(() => {
+    if (pageParam) {
+      const pageNumber = Number(pageParam);
+      if (isNaN(pageNumber) || pageNumber < 1) {
+        setCurrentPage(1);
+        setSearchParams({ page: '1' });
+      } else if (pageNumber > totalPages) {
+        setCurrentPage(totalPages);
+        setSearchParams({ page: String(totalPages) });
+      } else {
+        setCurrentPage(pageNumber);
+      }
+    }
+  }, [pageParam, totalPages, setSearchParams]);
+
+  const handlePageChange = (pageNumber: number) => {
+    if (pageNumber) {
+      setCurrentPage(pageNumber);
+      setSearchParams({ page: String(pageNumber) });
+    }
+  };
 
   const showItems = React.useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -292,21 +320,18 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
         {/* 페이지네이션 */}
         <Pagination>
           <PaginationContent>
-            {/* 이전 */}
+            {/* 이전 페이지 */}
             <PaginationItem>
               <PaginationPrevious
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                 className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                href='#'
               />
             </PaginationItem>
 
             {/* 첫번째 페이지 */}
             {currentPage > 2 && (
               <PaginationItem>
-                <PaginationLink onClick={() => setCurrentPage(1)} href='#'>
-                  1
-                </PaginationLink>
+                <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
               </PaginationItem>
             )}
 
@@ -317,10 +342,10 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
               </PaginationItem>
             )}
 
-            {/* 이전페이지 */}
+            {/* 이전 페이지 */}
             {currentPage > 1 && (
               <PaginationItem>
-                <PaginationLink onClick={() => setCurrentPage(currentPage - 1)} href='#'>
+                <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>
                   {currentPage - 1}
                 </PaginationLink>
               </PaginationItem>
@@ -328,15 +353,13 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
 
             {/* 현재 페이지 */}
             <PaginationItem>
-              <PaginationLink href='#' isActive>
-                {currentPage}
-              </PaginationLink>
+              <PaginationLink isActive>{currentPage}</PaginationLink>
             </PaginationItem>
 
-            {/* 다음페이지 */}
+            {/* 다음 페이지 */}
             {currentPage < totalPages && (
               <PaginationItem>
-                <PaginationLink onClick={() => setCurrentPage(currentPage + 1)} href='#'>
+                <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>
                   {currentPage + 1}
                 </PaginationLink>
               </PaginationItem>
@@ -349,23 +372,22 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
               </PaginationItem>
             )}
 
-            {/* 마지막페이지 */}
+            {/* 마지막 페이지 */}
             {currentPage < totalPages - 1 && (
               <PaginationItem>
-                <PaginationLink onClick={() => setCurrentPage(totalPages)} href='#'>
+                <PaginationLink onClick={() => handlePageChange(totalPages)}>
                   {totalPages}
                 </PaginationLink>
               </PaginationItem>
             )}
 
-            {/* 다음 */}
+            {/* 다음 페이지 */}
             <PaginationItem>
               <PaginationNext
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                 className={
                   currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
                 }
-                href='#'
               />
             </PaginationItem>
           </PaginationContent>
