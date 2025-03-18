@@ -1,18 +1,19 @@
 import type { Route } from './+types/LNFMS';
 import { LNFMS } from '../components/LNFMS';
 import { db, itemTable } from '~/db';
-import { eq, inArray } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 import { redirect, useLoaderData } from 'react-router';
 import { sessionStorage } from '~/auth.server';
 import { z } from 'zod';
 import { beautifyZodError } from '~/lib/utils';
-import { ReceiptIcon } from 'lucide-react';
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: 'LFNMS' }, { name: 'description', content: '능주고 분실물 관리 시스템' }];
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
+  console.log('loader');
+
   let session = await sessionStorage.getSession(request.headers.get('cookie'));
   let user = session.get('user');
   if (!user) return redirect('/login');
@@ -56,12 +57,18 @@ export async function action({ request }: Route.ActionArgs) {
 
       return { ok: true, type };
     } else if (type === 'deleteItem' || type === 'deleteItems') {
-      await db.delete(itemTable).where(
-        inArray(
-          itemTable.uuid,
-          uuids.map((uuid) => uuid.toString()),
-        ),
-      );
+      await db
+        .update(itemTable)
+        .set({
+          status: 'DISCARDED',
+          receiver: null,
+        })
+        .where(
+          inArray(
+            itemTable.uuid,
+            uuids.map((uuid) => uuid.toString()),
+          ),
+        );
       return { ok: true, type };
     }
   } catch (e) {
@@ -74,7 +81,5 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function LNFMSPage() {
-  const { items } = useLoaderData<typeof loader>();
-
-  return <LNFMS items={items} />;
+  return <LNFMS />;
 }

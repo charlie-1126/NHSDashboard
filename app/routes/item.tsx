@@ -27,10 +27,10 @@ const itemSchema = z.object({
   reporter: z.string().min(1, '1글자 이상 입력해주세요.').max(30, '30글자 이하로 입력해주세요.'),
   receiver: z
     .string()
-    .refine((v) => !(v && v.length > 0 && v.length < 2), {
+    .refine((v) => !(v && v.length !== 0 && v.length < 1), {
       message: '1글자 이상 입력해주세요.',
     })
-    .refine((v) => !(v && v.length > 0 && v.length > 30), {
+    .refine((v) => !(v && v.length !== 0 && v.length > 30), {
       message: '30글자 이하로 입력해주세요.',
     }),
   status: z.union([

@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router';
+import { useSearchParams, Link, useFetcher, useNavigate, useLoaderData } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LNFMSCard } from './LNFMSCard';
 import { Input } from './ui/input';
@@ -17,7 +17,6 @@ import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import * as React from 'react';
-import { Link, useFetcher, useNavigate } from 'react-router';
 import {
   Dialog,
   DialogContent,
@@ -29,11 +28,11 @@ import {
 import { Button } from './ui/button';
 import type { itemTable } from '~/db';
 import { FilterSection, type FilterValues } from './filter-section';
-import type { action } from '~/routes/LNFMS';
 
-export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
+export function LNFMS() {
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const { items } = useLoaderData();
 
   //분실물 리스트
   const [itemsList, setItemsList] = React.useState(items);
@@ -64,8 +63,11 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   };
 
   React.useEffect(() => {
+    setItemsList(items);
+  }, [items]);
+
+  React.useEffect(() => {
     if (fetcher.data && fetcher.data.ok && fetcher.data.type) {
-      console.log('fetcher.data', fetcher.data);
       switch (fetcher.data.type) {
         case 'deleteItem':
           setDeleteDialogOpen(false);
