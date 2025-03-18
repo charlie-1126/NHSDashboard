@@ -33,7 +33,7 @@ import type { action } from '~/routes/LNFMS';
 
 export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const navigate = useNavigate();
-  const fetcher = useFetcher<typeof action>();
+  const fetcher = useFetcher();
 
   //분실물 리스트
   const [itemsList, setItemsList] = React.useState(items);
@@ -65,6 +65,7 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
 
   React.useEffect(() => {
     if (fetcher.data && fetcher.data.ok && fetcher.data.type) {
+      console.log('fetcher.data', fetcher.data);
       switch (fetcher.data.type) {
         case 'deleteItem':
           setDeleteDialogOpen(false);
@@ -416,12 +417,15 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogHeader>
           <div className='pt-1'>
             <Label>인수자</Label>
+            {fetcher.data?.errors?.receiver && (
+              <div className='text-[13px] text-red-500'>{fetcher.data.errors.receiver}</div>
+            )}
           </div>
           <fetcher.Form method='post'>
             <input type='hidden' name='uuid' value={itemsList[returnIndex!]?.uuid} />
             <input type='hidden' name='type' value='returnItem' />
             <Input
-              name='reciever'
+              name='receiver'
               type='id'
               required
               onChange={(name) => setReceiverName(name.target.value)}
@@ -453,12 +457,17 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogHeader>
           <div className='pt-1'>
             <Label>인수자</Label>
+            {fetcher.data?.errors?.receiver && (
+              <div className='text-[13px] text-red-500'>{fetcher.data.errors.receiver}</div>
+            )}
           </div>
           <fetcher.Form method='post'>
-            <input type='hidden' name='uuids' value={selectList.map((i) => itemsList[i].uuid)} />
+            {selectList.map((i) => (
+              <input type='hidden' name='uuid' value={itemsList[i].uuid} />
+            ))}
             <input type='hidden' name='type' value='returnItems' />
             <Input
-              name='reciever'
+              name='receiver'
               type='id'
               required
               onChange={(name) => setReceiverName(name.target.value)}
@@ -516,7 +525,9 @@ export function LNFMS({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogHeader>
           <fetcher.Form method='post'>
             <DialogFooter>
-              <input type='hidden' name='uuids' value={selectList.map((i) => itemsList[i].uuid)} />
+              {selectList.map((i) => (
+                <input type='hidden' name='uuid' value={itemsList[i].uuid} />
+              ))}
               <input type='hidden' name='type' value='deleteItems' />
               <Button variant='outline' onClick={() => setMultipleDeleteDialogOpen(false)}>
                 취소
