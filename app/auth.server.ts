@@ -4,7 +4,7 @@ import { db, userTable } from './db';
 import { FormStrategy } from 'remix-auth-form';
 import { and, eq } from 'drizzle-orm';
 
-if (!import.meta.env.SESSION_SECRET) {
+if (!import.meta.env.VITE_SESSION_SECRET) {
   throw new Error('SESSION_SECRET is not set');
 }
 
@@ -14,8 +14,8 @@ export const sessionStorage = createCookieSessionStorage({
     sameSite: 'lax',
     httpOnly: true,
     path: '/',
-    secrets: [import.meta.env.SESSION_SECRET!],
-    secure: import.meta.env.NODE_ENV === 'production',
+    secrets: [import.meta.env.VITE_SESSION_SECRET!],
+    secure: import.meta.env.PROD,
   },
 });
 

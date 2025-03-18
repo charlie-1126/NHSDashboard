@@ -8,7 +8,7 @@ export default defineConfig({
   schema: './app/db/schemas/*.schema.ts',
 
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: process.env.VITE_DATABASE_URL!,
   },
 
   out: './drizzle',

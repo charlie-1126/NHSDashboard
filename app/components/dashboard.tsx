@@ -4,13 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
 import type { itemTable } from '~/db';
 import '../styles/font.css';
+import type { MealResponse } from '~/lib/neis-api';
+import { format, parse } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 export function Dashboard({
   items,
   meals,
 }: {
   items: (typeof itemTable.$inferSelect)[];
-  meals: any[];
+  meals: MealResponse['row'];
 }) {
   const itemsPerPage = 4;
   const totalPages = Math.ceil(items.length / itemsPerPage);
@@ -77,15 +80,16 @@ export function Dashboard({
               {meals.map((meal, index) => (
                 <div className='pb-4' key={index}>
                   <h3 className={`mb-2 text-xl font-bold ${index !== 0 ? 'pt-2' : ''}`}>
-                    {meals[0].meal_NM === '석식' && index === 1
-                      ? `다음날 ${meal.meal_NM}`
-                      : meal.meal_NM}
+                    {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
+                      locale: ko,
+                    })}{' '}
+                    {meal.MMEAL_SC_NM}
                   </h3>
                   <Card className='pt-2.5 pb-2.5'>
                     <CardContent>
                       <ul className='list-inside list-disc marker:text-gray-300'>
-                        {meal.meal.map((dish: any, index: any) => (
-                          <li key={index}>{dish}</li>
+                        {meal.DDISH_NM.split('<br/>').map((dish: any, index: any) => (
+                          <li key={index}>{dish.trim()}</li>
                         ))}
                       </ul>
                     </CardContent>
@@ -95,7 +99,7 @@ export function Dashboard({
             </CardContent>
           </Card>
         </div>
-        <div className='font-custom text-muted-foreground fixed right-5.5 bottom-4 z-50 text-lg'>
+        <div className='font-custom text-muted-foreground fixed right-6 bottom-5 z-50 text-lg'>
           NHS Dashboard by 이예찬, bmcyver
         </div>
       </div>

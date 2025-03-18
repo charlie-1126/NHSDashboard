@@ -87,7 +87,7 @@ export async function action({ request }: Route.ActionArgs) {
       imagePath = randomUUID() + '.webp';
       await sharp(image)
         .webp()
-        .toFile(resolve(import.meta.env.STATIC_FILE_PATH!, imagePath));
+        .toFile(resolve(import.meta.env.VITE_STATIC_FILE_PATH!, imagePath));
     }
 
     if (item.uuid === 'new') {
@@ -119,7 +119,10 @@ export async function action({ request }: Route.ActionArgs) {
 
         if (prevImage?.image)
           unlinkSync(
-            resolve(import.meta.env.STATIC_FILE_PATH!, prevImage.image.replace('/static/', '')),
+            resolve(
+              import.meta.env.VITE_STATIC_FILE_PATH!,
+              prevImage.image.replace('/static/', ''),
+            ),
           );
       }
 

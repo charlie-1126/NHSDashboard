@@ -38,9 +38,9 @@ export class NeisAPIService {
   private readonly cacheService = cacheService;
 
   constructor() {
-    if (!import.meta.env.NEIS_API_KEY) throw new Error('NEIS_API_KEY is not defined');
+    if (!import.meta.env.VITE_NEIS_API_KEY) throw new Error('NEIS_API_KEY is not defined');
     this.axios.defaults.params = {
-      KEY: import.meta.env.NEIS_API_KEY,
+      KEY: import.meta.env.VITE_NEIS_API_KEY,
       Type: 'json',
       pIndex: 1,
       pSize: 100,
