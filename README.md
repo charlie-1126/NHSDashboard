@@ -2,7 +2,7 @@
 
 ## 1. 소개
 
-본 프로젝트는 <!-- TODO: README 작성 -->
+본 프로젝트는 능주고등학교 분실물 대시보드 사이트입니다. 본 프로젝트는 능주고등학교의 분실물을 LNFMS를 통해 효율적으로 관리하고 급식실 화면을 통해 송출함으로서 학생들에게 편의를 주는데에 의의를 두고 개발되었습니다.
 
 ## 2. 기능
 
@@ -32,11 +32,7 @@ VITE_STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILE_DIRECTORY
 VITE_NEIS_API_KEY=YOUR_NEIS_API_KEY
 ```
 
-### 3.2. 기능 추가 및 수정
-
-본 프로젝트는 [react-router v7](https://reactrouter.com/), [shadcn/ui](https://ui.shadcn.com/), [drizzle-orm](https://orm.drizzle.team)을 사용하고 있습니다. 사용하는 라이브러리를 숙지하여 개발하여주시길 바랍니다.
-
-### 3.3. DB 관리
+### 3.2. DB 관리
 
 [drizzle-kit](https://kit.drizzle.team/)을 사용해서 관리할 수 있습니다.
 
@@ -57,6 +53,10 @@ VITE_NEIS_API_KEY=YOUR_NEIS_API_KEY
 ```bash
 docker compose up --build -d
 ```
+
+## 5. 참고자료
+
+본 프로젝트는 [react-router v7](https://reactrouter.com/), [shadcn/ui](https://ui.shadcn.com/), [drizzle-orm](https://orm.drizzle.team)을 사용하고 있습니다. 사용하는 라이브러리를 숙지하여 개발하여주시길 바랍니다.
 
 ## 제작자
 
