@@ -13,7 +13,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { items };
 }
 
-export default function Dashboard() {
+export default function HomePage() {
   const { items } = useLoaderData<typeof loader>();
 
   return <Home items={items} />;

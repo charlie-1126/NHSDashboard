@@ -34,7 +34,7 @@ export async function action({ request }: Route.ActionArgs) {
   return redirect('/login');
 }
 
-export default function Login() {
+export default function LoginPage() {
   const fetcher = useFetcher();
 
   return (

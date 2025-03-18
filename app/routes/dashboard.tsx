@@ -42,7 +42,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { items, meals };
 }
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const { items, meals } = useLoaderData<typeof loader>();
 
   return <DashboardComponent items={items} meals={meals} />;

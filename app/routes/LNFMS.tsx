@@ -29,7 +29,7 @@ export async function action({ request }: Route.ActionArgs) {
   return { ok: true, type: formData.get('type') };
 }
 
-export default function home() {
+export default function LNFMSPage() {
   const { items } = useLoaderData<typeof loader>();
 
   return <LNFMS items={items} />;
