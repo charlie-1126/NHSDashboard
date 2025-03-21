@@ -3,6 +3,9 @@ services:
     build: .
     networks:
       - proxy
+    volumes:
+      - ./data/static:/app/static/
+      - ./data/db.db:/app/db.db
 
 networks:
   proxy:
