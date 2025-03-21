@@ -1,5 +1,5 @@
 services:
-  NHSDashboard:
+  nhsdashboard:
     build: .
     networks:
       - proxy
