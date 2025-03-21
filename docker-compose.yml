@@ -1,11 +1,14 @@
 services:
   nhsdashboard:
     build: .
+    restart: unless-stopped
     networks:
       - proxy
     volumes:
       - ./data/static:/app/static/
       - ./data/db.db:/app/db.db
+    environment:
+      - TZ=Asia/Seoul
 
 networks:
   proxy:
