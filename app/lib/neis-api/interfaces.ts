@@ -20,7 +20,7 @@ export interface BaseResponse {
     };
   };
   row: object[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface BaseRequest {

@@ -163,7 +163,7 @@ export class NeisAPIService {
     });
     const key = Object.keys(res.data)[0];
 
-    if ((res.data as { RESULT?: any }).RESULT) {
+    if ((res.data as { RESULT?: unknown }).RESULT) {
       return {
         head: {
           RESULT: (res.data as { RESULT?: BaseResponse['head']['RESULT'] }).RESULT,

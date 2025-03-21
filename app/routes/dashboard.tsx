@@ -1,4 +1,3 @@
-import type { Route } from './+types/dashboard';
 import { Dashboard as DashboardComponent } from '../components/dashboard';
 import { db, itemTable } from '~/db';
 import { eq } from 'drizzle-orm';
@@ -9,18 +8,18 @@ import { ko } from 'date-fns/locale';
 
 const neisAPI = new NeisAPIService();
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [{ title: 'NHS Dashboard' }, { name: 'description', content: '능주고 대시보드' }];
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader() {
   const items = await db.select().from(itemTable).where(eq(itemTable.status, 'PENDING'));
 
   const now = new Date();
   const today = format(now, 'yyyyMMdd', { locale: ko });
   const tomorrow = format(add(now, { days: 1 }), 'yyyyMMdd', { locale: ko });
 
-  let meals = (
+  const meals = (
     await neisAPI.mealInfoNeis({
       ATPT_OFCDC_SC_CODE: 'Q10',
       SD_SCHUL_CODE: '8490081',

@@ -9,14 +9,14 @@ if (!import.meta.env.VITE_STATIC_FILE_PATH) {
 function decode(str: string) {
   try {
     return decodeURIComponent(str);
-  } catch (e) {
+  } catch {
     return -1;
   }
 }
 
 function containsDotFile(parts: string[]) {
-  for (var i = 0; i < parts.length; i++) {
-    var part = parts[i];
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
     if (part.length > 1 && part[0] === '.') {
       return true;
     }
@@ -56,7 +56,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     if (st.isDirectory()) return new Response('Not Found', { status: 404 });
 
     return new Response(readFileSync(path));
-  } catch (e) {
+  } catch {
     return new Response('Not Found', { status: 404 });
   }
 }

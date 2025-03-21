@@ -27,7 +27,7 @@ export function formatDate(date: Date) {
 export function beautifyZodError(error: ZodError) {
   if (error?.errors) {
     return Object.fromEntries(
-      Object.entries(error.errors).map(([_, value]) => {
+      Object.entries(error.errors).map(([, value]) => {
         return [value.path[0], value.message];
       }),
     );

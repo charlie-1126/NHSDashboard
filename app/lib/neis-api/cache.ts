@@ -31,7 +31,7 @@ class CacheService {
         ttl,
       });
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }

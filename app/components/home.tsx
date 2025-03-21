@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Dialog, DialogContent } from './ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import type { itemTable } from '~/db';
-import { Link, NavLink } from 'react-router';
+import { Link } from 'react-router';
 import { DialogTitle } from '@radix-ui/react-dialog';
 
 export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
@@ -38,10 +38,7 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <VisuallyHidden>
             <DialogTitle></DialogTitle>
           </VisuallyHidden>
-          <DialogContent
-            className='flex h-[70vh] w-[70vw] items-center justify-center !border-none bg-transparent !shadow-none outline-none [&>button]:hidden'
-            aria-describedby={undefined}
-          >
+          <DialogContent className='flex h-[70vh] w-[70vw] items-center justify-center !border-none bg-transparent !shadow-none outline-none [&>button]:hidden'>
             {selectedImage && (
               <img src={selectedImage} className='h-full w-full rounded-md object-contain' />
             )}

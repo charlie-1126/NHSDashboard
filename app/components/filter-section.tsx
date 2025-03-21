@@ -9,26 +9,35 @@ import { CalendarIcon, ChevronDown, ChevronUp, FilterX } from 'lucide-react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
+import { useSearchParams } from 'react-router';
 
-export type FilterValues = {
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-  location: string;
-  name: string;
-  status: string;
-  reporter: string;
-  receiver: string;
+const useDebounce = <T extends unknown[]>(callback: (...args: T) => void, delay: number) => {
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const debouncedCallback = React.useCallback(
+    (...args: T) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay],
+  );
+
+  return debouncedCallback;
 };
 
-type FilterSectionProps = {
-  filters: FilterValues;
-  setFilters: React.Dispatch<React.SetStateAction<FilterValues>>;
-  resetFilters: () => void;
-};
-
-export function FilterSection({ filters, setFilters, resetFilters }: FilterSectionProps) {
+export function FilterSection() {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
+  const [filters, setFilters] = React.useState<Record<string, string>>({});
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const debouncedSetSearchParams = useDebounce((newFilters: Record<string, string>) => {
+    setSearchParams(newFilters);
+  }, 300);
 
   React.useEffect(() => {
     const checkIsMobile = () => {
@@ -43,22 +52,19 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
   }, []);
 
   React.useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    setFilters(Object.fromEntries(searchParams.entries()));
+  }, [searchParams]);
 
-  //필터 적용됨?
-  const isFilterApplied = () => {
-    return (
-      !!filters.startDate ||
-      !!filters.endDate ||
-      !!filters.location ||
-      !!filters.name ||
-      (!!filters.status && filters.status !== 'ALL') ||
-      !!filters.reporter ||
-      !!filters.receiver
-    );
+  const isFilterApplied = () => Object.keys(filters).length > 0;
+
+  const resetFilters = () => {
+    setFilters({});
+    setSearchParams({});
+  };
+
+  const handleFilterChange = (newFilters: Record<string, string>) => {
+    setFilters(newFilters);
+    debouncedSetSearchParams(newFilters);
   };
 
   return (
@@ -102,10 +108,10 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               이름
             </Label>
             <Input
-              id='name'
+              name='name'
               placeholder='이름 검색'
-              value={filters.name}
-              onChange={(e) => setFilters((prev) => ({ ...prev, name: e.target.value }))}
+              value={filters.name || ''}
+              onChange={(e) => handleFilterChange({ ...filters, name: e.target.value })}
               className='h-8 text-xs md:text-sm'
             />
           </div>
@@ -117,15 +123,19 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  id='date-from'
+                  name='date-from'
                   variant='outline'
                   className='h-8 w-full justify-start text-left text-xs font-normal md:text-sm'
                 >
                   <CalendarIcon className='mr-2 h-3.5 w-3.5' />
                   {filters.startDate ? (
-                    format(filters.startDate, isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일', {
-                      locale: ko,
-                    })
+                    format(
+                      new Date(filters.startDate),
+                      isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일',
+                      {
+                        locale: ko,
+                      },
+                    )
                   ) : (
                     <span>날짜 선택</span>
                   )}
@@ -134,8 +144,13 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               <PopoverContent className='w-auto p-0'>
                 <Calendar
                   mode='single'
-                  selected={filters.startDate}
-                  onSelect={(date) => setFilters((prev) => ({ ...prev, startDate: date }))}
+                  selected={filters.startDate ? new Date(filters.startDate) : undefined}
+                  onSelect={(date) =>
+                    handleFilterChange({
+                      ...filters,
+                      startDate: date ? date.toISOString() : new Date().toISOString(),
+                    })
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -149,15 +164,19 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  id='date-to'
+                  name='date-to'
                   variant='outline'
                   className='h-8 w-full justify-start text-left text-xs font-normal md:text-sm'
                 >
                   <CalendarIcon className='mr-2 h-3.5 w-3.5' />
                   {filters.endDate ? (
-                    format(filters.endDate, isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일', {
-                      locale: ko,
-                    })
+                    format(
+                      new Date(filters.endDate),
+                      isMobile ? 'yyyy/MM/dd' : 'yyyy년 MM월 dd일',
+                      {
+                        locale: ko,
+                      },
+                    )
                   ) : (
                     <span>날짜 선택</span>
                   )}
@@ -166,8 +185,13 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               <PopoverContent className='w-auto p-0'>
                 <Calendar
                   mode='single'
-                  selected={filters.endDate}
-                  onSelect={(date) => setFilters((prev) => ({ ...prev, endDate: date }))}
+                  selected={filters.endDate ? new Date(filters.endDate) : undefined}
+                  onSelect={(date) =>
+                    handleFilterChange({
+                      ...filters,
+                      endDate: date ? date.toISOString() : new Date().toISOString(),
+                    })
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -179,10 +203,10 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               제보자
             </Label>
             <Input
-              id='reporter'
+              name='reporter'
               placeholder='제보자 검색'
-              value={filters.reporter}
-              onChange={(e) => setFilters((prev) => ({ ...prev, reporter: e.target.value }))}
+              value={filters.reporter || ''}
+              onChange={(e) => handleFilterChange({ ...filters, reporter: e.target.value })}
               className='h-8 text-xs md:text-sm'
             />
           </div>
@@ -192,10 +216,10 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               인수자
             </Label>
             <Input
-              id='receiver'
+              name='receiver'
               placeholder='인수자 검색'
-              value={filters.receiver}
-              onChange={(e) => setFilters((prev) => ({ ...prev, receiver: e.target.value }))}
+              value={filters.receiver || ''}
+              onChange={(e) => handleFilterChange({ ...filters, receiver: e.target.value })}
               className='h-8 text-xs md:text-sm'
             />
           </div>
@@ -205,10 +229,10 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               위치
             </Label>
             <Input
-              id='location'
+              name='location'
               placeholder='위치 검색'
-              value={filters.location}
-              onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
+              value={filters.location || ''}
+              onChange={(e) => handleFilterChange({ ...filters, location: e.target.value })}
               className='h-8 text-xs md:text-sm'
             />
           </div>
@@ -218,8 +242,8 @@ export function FilterSection({ filters, setFilters, resetFilters }: FilterSecti
               상태
             </Label>
             <Select
-              value={filters.status}
-              onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}
+              value={filters.status || 'ALL'}
+              onValueChange={(value) => handleFilterChange({ ...filters, status: value })}
             >
               <SelectTrigger id='status' className='h-8 text-xs md:text-sm'>
                 <SelectValue placeholder='상태 선택' />

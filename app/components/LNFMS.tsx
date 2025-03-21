@@ -1,17 +1,8 @@
-import { useSearchParams, Link, useFetcher, useNavigate, useLoaderData } from 'react-router';
+import { Link, useFetcher, useNavigate, useLoaderData } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LNFMSCard } from './LNFMSCard';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from './ui/pagination';
 import { ArrowLeft, LogOut, Search, Trash2 } from 'lucide-react';
 import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
@@ -27,45 +18,40 @@ import {
 } from './ui/dialog';
 import { Button } from './ui/button';
 import type { itemTable } from '~/db';
-import { FilterSection, type FilterValues } from './filter-section';
+import { FilterSection } from './filter-section';
+import type { loader } from '~/routes/LNFMS';
+import { LNFMSPagination } from './LNFMSPagination';
 
 export function LNFMS() {
   const navigate = useNavigate();
   const fetcher = useFetcher();
-  const { items } = useLoaderData();
 
-  //분실물 리스트
-  const [itemsList, setItemsList] = React.useState(items);
+  const { items } = useLoaderData<typeof loader>();
+
+  //* dialogs
+  const [multipleDeleteDialogOpen, setMultipleDeleteDialogOpen] = React.useState(false);
+  const [multipleReturnDialogOpen, setMultipleReturnDialogOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [returnDialogOpen, setReturnDialogOpen] = React.useState(false);
+
   //다중선택
   const [selectList, setSelectList] = React.useState<number[]>([]);
   const [multipleSelection, setMultipleSelection] = React.useState(false);
+
   //반환
   const [returnIndex, setReturnIndex] = React.useState<number | null>(null);
-  const [returnDialogOpen, setReturnDialogOpen] = React.useState(false);
-  const [multipleReturnDialogOpen, setMultipleReturnDialogOpen] = React.useState(false);
   //삭제
   const [deleteIndex, setDeleteIndex] = React.useState<number | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [multipleDeleteDialogOpen, setMultipleDeleteDialogOpen] = React.useState(false);
   //인수자
   const [receiverName, setReceiverName] = React.useState<string | null>(null);
   //이미지 팝업
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
 
-  //페이지
-  const itemsPerPage = 10;
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pageParam = searchParams.get('page');
-  const [currentPage, setCurrentPage] = React.useState(pageParam ? Number(pageParam) : 1);
-
   const onImageClick = (item: typeof itemTable.$inferSelect) => {
     setSelectedImage(item.image?.length ? item.image : '/image/noImg.gif');
   };
 
-  React.useEffect(() => {
-    setItemsList(items);
-  }, [items]);
-
+  //* handlers
   React.useEffect(() => {
     if (fetcher.data && fetcher.data.ok && fetcher.data.type) {
       switch (fetcher.data.type) {
@@ -89,118 +75,11 @@ export function LNFMS() {
     }
   }, [fetcher.data]);
 
-  // 필터링
-  const [filters, setFilters] = React.useState<FilterValues>({
-    startDate: undefined,
-    endDate: undefined,
-    location: '',
-    name: '',
-    status: '',
-    reporter: '',
-    receiver: '',
-  });
-
-  // 필터 초기화
-  const resetFilters = () => {
-    setFilters({
-      startDate: undefined,
-      endDate: undefined,
-      location: '',
-      name: '',
-      status: '',
-      reporter: '',
-      receiver: '',
-    });
-  };
-
-  // 필터링된 아이템 목록
-  const filteredItems = React.useMemo(() => {
-    return itemsList.filter((item) => {
-      // 날짜 필터링
-      if (filters.startDate && new Date(item.createdAt) < filters.startDate) {
-        return false;
-      }
-      if (filters.endDate) {
-        const endDateWithTime = new Date(filters.endDate);
-        endDateWithTime.setHours(23, 59, 59, 999);
-        if (new Date(item.createdAt) > endDateWithTime) {
-          return false;
-        }
-      }
-
-      // 위치 필터링
-      if (
-        filters.location &&
-        !item.location?.toLowerCase().includes(filters.location.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // 이름 필터링
-      if (filters.name && !item.name?.toLowerCase().includes(filters.name.toLowerCase())) {
-        return false;
-      }
-
-      // 상태 필터링
-      if (filters.status && item.status !== filters.status && filters.status !== 'ALL') {
-        return false;
-      }
-
-      // 제보자 필터링
-      if (
-        filters.reporter &&
-        !item.reporter?.toLowerCase().includes(filters.reporter.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // 인수자 필터링
-      if (
-        filters.receiver &&
-        !item.receiver?.toLowerCase().includes(filters.receiver.toLowerCase())
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [itemsList, filters]);
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
-  // 파라미터 업데이트
-  React.useEffect(() => {
-    if (pageParam) {
-      const pageNumber = Number(pageParam);
-      if (isNaN(pageNumber) || pageNumber < 1) {
-        setCurrentPage(1);
-        setSearchParams({ page: '1' });
-      } else if (pageNumber > totalPages) {
-        setCurrentPage(totalPages);
-        setSearchParams({ page: String(totalPages) });
-      } else {
-        setCurrentPage(pageNumber);
-      }
-    }
-  }, [pageParam, totalPages, setSearchParams]);
-
-  const handlePageChange = (pageNumber: number) => {
-    if (pageNumber) {
-      setCurrentPage(pageNumber);
-      setSearchParams({ page: String(pageNumber) });
-    }
-  };
-
-  const showItems = React.useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return filteredItems.slice(startIndex, endIndex);
-  }, [filteredItems, currentPage, itemsPerPage]);
-
   // 카드클릭 로직
   const cardClick = (index: number) => {
     if (!multipleSelection) {
       //단일 선택 로직
-      navigate(`/item/${itemsList[index].uuid}`);
+      navigate(`/item/${items[index].uuid}`);
     } else {
       //다중 선택 로직
       let copy = [...selectList];
@@ -208,6 +87,7 @@ export function LNFMS() {
       setSelectList(copy);
     }
   };
+
   return (
     <div className='flex h-screen flex-col p-2 md:p-4 md:pb-2'>
       <div className='flex-1 overflow-y-auto'>
@@ -279,15 +159,15 @@ export function LNFMS() {
 
           {/* 필터 섹션 */}
           <CardContent className='px-2 py-0 md:px-6'>
-            <FilterSection filters={filters} setFilters={setFilters} resetFilters={resetFilters} />
+            <FilterSection />
           </CardContent>
 
           {/* 분실물 카드 */}
           <CardContent
-            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${showItems.length > 0 ? '' : 'flex items-center justify-center'}`}
+            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${items.length > 0 ? '' : 'flex items-center justify-center'}`}
           >
-            {showItems.length > 0 ? (
-              showItems.map((item, index) => (
+            {items.length > 0 ? (
+              items.map((item, index) => (
                 <LNFMSCard
                   onClick={() => cardClick(index)}
                   key={index}
@@ -317,82 +197,9 @@ export function LNFMS() {
           </CardContent>
         </Card>
       </div>
+
       <div className='pt-2'>
-        {/* 페이지네이션 */}
-        <Pagination>
-          <PaginationContent>
-            {/* 이전 페이지 */}
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
-
-            {/* 첫번째 페이지 */}
-            {currentPage > 2 && (
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
-              </PaginationItem>
-            )}
-
-            {/* 생략 */}
-            {currentPage > 3 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            {/* 이전 페이지 */}
-            {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>
-                  {currentPage - 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {/* 현재 페이지 */}
-            <PaginationItem>
-              <PaginationLink isActive>{currentPage}</PaginationLink>
-            </PaginationItem>
-
-            {/* 다음 페이지 */}
-            {currentPage < totalPages && (
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>
-                  {currentPage + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {/* 생략 */}
-            {currentPage < totalPages - 2 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
-
-            {/* 마지막 페이지 */}
-            {currentPage < totalPages - 1 && (
-              <PaginationItem>
-                <PaginationLink onClick={() => handlePageChange(totalPages)}>
-                  {totalPages}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-
-            {/* 다음 페이지 */}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-                className={
-                  currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <LNFMSPagination />
       </div>
 
       {/* Create 플로팅 버튼 */}
@@ -412,8 +219,8 @@ export function LNFMS() {
           <DialogHeader>
             <DialogTitle>분실물 반환</DialogTitle>
             <DialogDescription>
-              {returnIndex !== null && itemsList[returnIndex]
-                ? `"${itemsList[returnIndex].name}" 항목을 반환하시겠습니까?`
+              {returnIndex !== null && items[returnIndex]
+                ? `"${items[returnIndex].name}" 항목을 반환하시겠습니까?`
                 : '이 항목을 반환하시겠습니까?'}
             </DialogDescription>
           </DialogHeader>
@@ -424,7 +231,7 @@ export function LNFMS() {
             )}
           </div>
           <fetcher.Form method='post'>
-            <input type='hidden' name='uuid' value={itemsList[returnIndex!]?.uuid} />
+            <input type='hidden' name='uuid' value={items[returnIndex!]?.uuid} />
             <input type='hidden' name='type' value='returnItem' />
             <Input
               name='receiver'
@@ -465,7 +272,7 @@ export function LNFMS() {
           </div>
           <fetcher.Form method='post'>
             {selectList.map((i) => (
-              <input type='hidden' name='uuid' value={itemsList[i].uuid} />
+              <input type='hidden' name='uuid' value={items[i].uuid} />
             ))}
             <input type='hidden' name='type' value='returnItems' />
             <Input
@@ -496,14 +303,14 @@ export function LNFMS() {
           <DialogHeader>
             <DialogTitle>분실물 삭제</DialogTitle>
             <DialogDescription>
-              {deleteIndex !== null && itemsList[deleteIndex]
-                ? `"${itemsList[deleteIndex].name}" 항목을 삭제하시겠습니까?`
+              {deleteIndex !== null && items[deleteIndex]
+                ? `"${items[deleteIndex].name}" 항목을 삭제하시겠습니까?`
                 : '이 항목을 삭제하시겠습니까?'}
             </DialogDescription>
           </DialogHeader>
           <fetcher.Form method='post'>
             <DialogFooter>
-              <input type='hidden' name='uuid' value={itemsList[deleteIndex!]?.uuid} />
+              <input type='hidden' name='uuid' value={items[deleteIndex!]?.uuid} />
               <input type='hidden' name='type' value='deleteItem' />
               <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
                 취소
@@ -528,7 +335,7 @@ export function LNFMS() {
           <fetcher.Form method='post'>
             <DialogFooter>
               {selectList.map((i) => (
-                <input type='hidden' name='uuid' value={itemsList[i].uuid} />
+                <input type='hidden' name='uuid' value={items[i].uuid} />
               ))}
               <input type='hidden' name='type' value='deleteItems' />
               <Button variant='outline' onClick={() => setMultipleDeleteDialogOpen(false)}>

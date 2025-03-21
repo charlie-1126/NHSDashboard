@@ -105,7 +105,6 @@ export function LNFMSCard({
           onDelete();
         }}
         className={`absolute top-1 right-2 cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100 md:top-3 md:right-3 ${multiple ? 'invisible' : ''}`}
-        aria-label='삭제'
       >
         <Trash2 size={20} />
       </button>
@@ -115,7 +114,6 @@ export function LNFMSCard({
           onReturn();
         }}
         className={`absolute top-1 right-10 cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100 md:top-3 md:right-12 ${multiple ? 'invisible' : ''}`}
-        aria-label='반환'
       >
         <FaCheck size={20} />
       </button>

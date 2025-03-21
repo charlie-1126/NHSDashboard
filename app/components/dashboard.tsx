@@ -88,7 +88,7 @@ export function Dashboard({
                   <Card className='pt-2.5 pb-2.5'>
                     <CardContent>
                       <ul className='list-inside list-disc marker:text-gray-300'>
-                        {meal.DDISH_NM.split('<br/>').map((dish: any, index: any) => (
+                        {meal.DDISH_NM.split('<br/>').map((dish, index) => (
                           <li key={index}>{dish.trim()}</li>
                         ))}
                       </ul>

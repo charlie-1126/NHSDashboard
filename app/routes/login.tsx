@@ -9,7 +9,7 @@ import { Link, redirect, useFetcher } from 'react-router';
 import { LoaderCircle } from 'lucide-react';
 import { authenticator, sessionStorage } from '~/auth.server';
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [{ title: 'login - NHS Dashboard' }];
 }
 
