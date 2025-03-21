@@ -3,9 +3,14 @@ import { createCookieSessionStorage } from 'react-router';
 import { db, userTable } from './db';
 import { FormStrategy } from 'remix-auth-form';
 import { and, eq } from 'drizzle-orm';
+import { createHash } from 'node:crypto';
 
 if (!import.meta.env.VITE_SESSION_SECRET) {
   throw new Error('SESSION_SECRET is not set');
+}
+
+function sha512(str: string) {
+  return createHash('sha512').update(str).digest('hex');
 }
 
 export const sessionStorage = createCookieSessionStorage({
@@ -41,7 +46,9 @@ authenticator.use(
     const user = await db
       .select()
       .from(userTable)
-      .where(and(eq(userTable.id, id.toString()), eq(userTable.password, password.toString())))
+      .where(
+        and(eq(userTable.id, id.toString()), eq(userTable.password, sha512(password.toString()))),
+      )
       .limit(1);
 
     if (user.length !== 1) {
