@@ -1,7 +1,7 @@
 import type { Route } from './+types/LNFMS';
 import { LNFMS } from '../components/LNFMS';
 import { db, itemTable } from '~/db';
-import { and, eq, inArray, like, SQL, sql } from 'drizzle-orm';
+import { and, eq, inArray, like, type SQL, sql } from 'drizzle-orm';
 import { redirect } from 'react-router';
 import { sessionStorage } from '~/auth.server';
 import { z } from 'zod';
