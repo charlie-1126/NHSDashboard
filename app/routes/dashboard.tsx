@@ -26,8 +26,8 @@ export async function loader() {
       MLSV_FROM_YMD: today,
       MLSV_TO_YMD: tomorrow,
     })
-  ).row
-    .filter((meal) => {
+  )?.row
+    ?.filter((meal) => {
       const h = now.getHours();
       return h <= 8
         ? meal.MLSV_YMD === today && ['1', '2'].includes(meal.MMEAL_SC_CODE)
@@ -36,9 +36,9 @@ export async function loader() {
           : (meal.MLSV_YMD === today && meal.MMEAL_SC_CODE === '3') ||
             (meal.MLSV_YMD === tomorrow && meal.MMEAL_SC_CODE === '1');
     })
-    .sort((a, b) => a.MLSV_YMD.localeCompare(b.MLSV_YMD));
+    ?.sort((a, b) => a.MLSV_YMD.localeCompare(b.MLSV_YMD));
 
-  return { items, meals };
+  return { items, meals: meals ?? [] };
 }
 
 export default function DashboardPage() {
