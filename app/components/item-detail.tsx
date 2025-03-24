@@ -86,7 +86,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
           <CardContent className='space-y-4'>
             {/* 이미지 업로드 */}
             <div className='space-y-2'>
-              <Label>사진</Label>
+              <Label>사진 *</Label>
               <div className='flex flex-col items-center space-y-2'>
                 {imagePreview ? (
                   <div className='relative'>
@@ -239,7 +239,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 제보자 */}
             <div className='space-y-2'>
-              <Label>제보자</Label>
+              <Label>제보자 *</Label>
               {fetcher.data?.errors?.reporter && (
                 <div className='text-[13px] text-red-500'>{fetcher.data.errors.reporter}</div>
               )}

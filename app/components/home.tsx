@@ -15,14 +15,14 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   };
 
   return (
-    <div className='bg-background flex min-h-screen flex-col p-4'>
+    <div className='bg-background flex h-screen flex-col p-4'>
       <Card className='flex h-full min-h-[80vh] flex-col shadow-md'>
         <CardHeader className='border-b pb-4'>
           <CardTitle className='text-primary text-center text-2xl font-bold sm:text-2xl'>
             능주고 분실물 안내 서비스
           </CardTitle>
         </CardHeader>
-        <CardContent className='flex-grow overflow-hidden p-4'>
+        <CardContent className='flex-grow overflow-hidden p-4 py-0'>
           <div className='h-full overflow-y-auto pr-2'>
             <div className='grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {items.map((item, index) => (

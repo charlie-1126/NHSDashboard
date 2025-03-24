@@ -75,7 +75,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   if (searchParams.data.endDate) {
     searchParams.data.endDate.setHours(23, 59, 59);
-    filters.push(sql`${itemTable.processedAt} <= ${searchParams.data.endDate.getTime() / 1000}`);
+    filters.push(sql`${itemTable.createdAt} <= ${searchParams.data.endDate.getTime() / 1000}`);
   }
 
   const filter = and(...filters);
