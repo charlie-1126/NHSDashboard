@@ -42,7 +42,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   path = normalize('.' + sep + path);
 
   if (/(?:^|[\\/])\.\.(?:[\\/]|$)/.test(path) || path.includes('..'))
-    return new Response('Forbidden', { status: 404 });
+    return new Response('Not Found', { status: 404 });
 
   path = normalize(join(import.meta.env.VITE_STATIC_FILE_PATH!, path));
 

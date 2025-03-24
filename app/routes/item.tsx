@@ -33,12 +33,7 @@ const itemSchema = z.object({
     .refine((v) => !(v && v.length !== 0 && v.length > 30), {
       message: '30글자 이하로 입력해주세요.',
     }),
-  status: z.union([
-    z.literal('PENDING'),
-    z.literal('RETURNED'),
-    z.literal('DISCARDED'),
-    z.literal('DELETED'),
-  ]),
+  status: z.union([z.literal('PENDING'), z.literal('RETURNED'), z.literal('DISCARDED')]),
 });
 
 export function meta({ data }: Route.MetaArgs) {
@@ -80,6 +75,15 @@ export async function action({ request }: Route.ActionArgs) {
         }
       },
     );
+
+    if (formData.get('type') === 'deleteItem') {
+      const uuid = formData.get('uuid');
+      if (typeof uuid !== 'string') return redirect('/LNFMS');
+
+      await db.update(itemTable).set({ status: 'DELETED' }).where(eq(itemTable.uuid, uuid));
+
+      return redirect('/LNFMS');
+    }
 
     const item = itemSchema.parse(Object.fromEntries(formData.entries()));
 
@@ -141,6 +145,7 @@ export async function action({ request }: Route.ActionArgs) {
         .where(eq(itemTable.uuid, item.uuid));
     }
   } catch (error) {
+    console.log(error);
     const err = error as Error;
     if (err.name === 'MaxFileSizeExceededError') {
       return {
