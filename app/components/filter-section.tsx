@@ -253,7 +253,6 @@ export function FilterSection() {
                 <SelectItem value='PENDING'>보관중</SelectItem>
                 <SelectItem value='RETURNED'>반환됨</SelectItem>
                 <SelectItem value='DISCARDED'>폐기됨</SelectItem>
-                <SelectItem value='DELETED'>삭제됨</SelectItem>
               </SelectContent>
             </Select>
           </div>

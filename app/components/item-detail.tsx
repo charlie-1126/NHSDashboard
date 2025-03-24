@@ -4,8 +4,16 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle, Trash2 } from 'lucide-react';
 import { format, add } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
@@ -22,6 +30,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
   const isNewItem = !id || id === 'new';
 
   const fetcher = useFetcher();
+
+  //삭제
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
   // 폼 상태 관리
   const [formData, setFormData] = React.useState<
@@ -86,7 +97,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
           <CardContent className='space-y-4'>
             {/* 이미지 업로드 */}
             <div className='space-y-2'>
-              <Label>사진 *</Label>
+              <Label>
+                사진 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <div className='flex flex-col items-center space-y-2'>
                 {imagePreview ? (
                   <div className='relative'>
@@ -138,7 +151,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 이름 */}
             <div className='space-y-2'>
-              <Label>이름 *</Label>
+              <Label>
+                이름 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <Input
                 name='name'
                 value={formData.name}
@@ -153,7 +168,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 취득장소 */}
             <div className='space-y-2'>
-              <Label>취득장소 *</Label>
+              <Label>
+                취득장소 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <Input
                 name='location'
                 value={formData.location}
@@ -168,7 +185,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 취득 일자 */}
             <div className='space-y-2'>
-              <Label>취득 일자 *</Label>
+              <Label>
+                취득 일자 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <input type='hidden' name='createdAt' value={formData.createdAt.toISOString()} />
               <Popover>
                 <PopoverTrigger asChild>
@@ -206,7 +225,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 폐기 일자 */}
             <div className='space-y-2'>
-              <Label>폐기 일자 *</Label>
+              <Label>
+                폐기 일자 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <input type='hidden' name='processedAt' value={formData.processedAt.toISOString()} />
               <Popover>
                 <PopoverTrigger asChild>
@@ -239,7 +260,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 제보자 */}
             <div className='space-y-2'>
-              <Label>제보자 *</Label>
+              <Label>
+                제보자 <span className='font-bold text-red-500'>*</span>
+              </Label>
               {fetcher.data?.errors?.reporter && (
                 <div className='text-[13px] text-red-500'>{fetcher.data.errors.reporter}</div>
               )}
@@ -267,7 +290,9 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
 
             {/* 상태 */}
             <div className='space-y-2'>
-              <Label>상태 *</Label>
+              <Label>
+                상태 <span className='font-bold text-red-500'>*</span>
+              </Label>
               <input type='hidden' name='status' value={formData.status} />
               <Select
                 value={formData.status}
@@ -282,23 +307,62 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                   <SelectItem value='PENDING'>보관중</SelectItem>
                   <SelectItem value='RETURNED'>반환됨</SelectItem>
                   <SelectItem value='DISCARDED'>폐기됨</SelectItem>
-                  <SelectItem value='DELETED'>삭제됨</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
-          <CardFooter className='flex justify-between'>
-            <Button type='button' variant='outline' onClick={() => navigate('/LNFMS')}>
+          <CardFooter className='flex flex-row items-center justify-between'>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => navigate('/LNFMS')}
+              className='cursor-pointer'
+            >
               취소
             </Button>
-            <Button type='submit'>
-              <Save className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`} />
-              <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
-              저장
-            </Button>
+            <div className='flex items-center justify-center gap-2'>
+              <Button
+                type='button'
+                variant='destructive'
+                onClick={() => setDeleteDialogOpen(true)}
+                className='cursor-pointer'
+              >
+                <Trash2 className={`mr-2 h-4 w-4`} />
+                삭제
+              </Button>
+              <Button type='submit' className='cursor-pointer'>
+                <Save className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`} />
+                <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
+                저장
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       </fetcher.Form>
+
+      {/* 아이템 삭제 모달 */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>분실물 삭제</DialogTitle>
+            <DialogDescription>
+              {item ? `"${item.name}" 항목을 삭제하시겠습니까?` : '이 항목을 삭제하시겠습니까?'}
+            </DialogDescription>
+          </DialogHeader>
+          <fetcher.Form method='post'>
+            <DialogFooter>
+              <input type='hidden' name='uuid' value={item?.uuid} />
+              <input type='hidden' name='type' value='deleteItem' />
+              <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
+                취소
+              </Button>
+              <Button type='submit' variant='destructive'>
+                삭제
+              </Button>
+            </DialogFooter>
+          </fetcher.Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

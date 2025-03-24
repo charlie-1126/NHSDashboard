@@ -1,7 +1,7 @@
 import type { Route } from './+types/LNFMS';
 import { LNFMS } from '../components/LNFMS';
 import { db, itemTable } from '~/db';
-import { and, eq, inArray, like, type SQL, sql } from 'drizzle-orm';
+import { and, eq, inArray, like, ne, type SQL, sql } from 'drizzle-orm';
 import { redirect } from 'react-router';
 import { sessionStorage } from '~/auth.server';
 import { z } from 'zod';
@@ -50,6 +50,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   if (searchParams.data.status !== 'ALL') {
     filters.push(eq(itemTable.status, searchParams.data.status));
+  } else {
+    filters.push(ne(itemTable.status, 'DELETED'));
   }
 
   if (searchParams.data.name) {
