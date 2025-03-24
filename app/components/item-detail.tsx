@@ -346,7 +346,19 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
           <DialogHeader>
             <DialogTitle>분실물 삭제</DialogTitle>
             <DialogDescription>
-              {item ? `"${item.name}" 항목을 삭제하시겠습니까?` : '이 항목을 삭제하시겠습니까?'}
+              {item ? (
+                <>
+                  "{item.name}" 항목을 삭제하시겠습니까?
+                  <br />
+                  삭제한 항목은 다시 되돌릴 수 없습니다.
+                </>
+              ) : (
+                <>
+                  이 항목을 삭제하시겠습니까?
+                  <br />
+                  삭제한 항목은 다시 되돌릴 수 없습니다.
+                </>
+              )}
             </DialogDescription>
           </DialogHeader>
           <fetcher.Form method='post'>

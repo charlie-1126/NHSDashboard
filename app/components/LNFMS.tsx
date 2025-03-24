@@ -297,15 +297,15 @@ export function LNFMS() {
         </DialogContent>
       </Dialog>
 
-      {/* 단일 삭제 모달 */}
+      {/* 단일 폐기 모달 */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>분실물 삭제</DialogTitle>
+            <DialogTitle>분실물 폐기</DialogTitle>
             <DialogDescription>
               {deleteIndex !== null && items[deleteIndex]
-                ? `"${items[deleteIndex].name}" 항목을 삭제하시겠습니까?`
-                : '이 항목을 삭제하시겠습니까?'}
+                ? `"${items[deleteIndex].name}" 항목을 폐기하시겠습니까?`
+                : '이 항목을 폐기하시겠습니까?'}
             </DialogDescription>
           </DialogHeader>
           <fetcher.Form method='post'>
@@ -316,20 +316,20 @@ export function LNFMS() {
                 취소
               </Button>
               <Button type='submit' variant='destructive'>
-                삭제
+                폐기
               </Button>
             </DialogFooter>
           </fetcher.Form>
         </DialogContent>
       </Dialog>
 
-      {/* 다중 삭제 모달 */}
+      {/* 다중 폐기 모달 */}
       <Dialog open={multipleDeleteDialogOpen} onOpenChange={setMultipleDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>분실물 다중 삭제</DialogTitle>
+            <DialogTitle>분실물 다중 폐기</DialogTitle>
             <DialogDescription>
-              선택한 {selectList.length}개의 항목들을 삭제하시겠습니까?
+              선택한 {selectList.length}개의 항목들을 폐기하시겠습니까?
             </DialogDescription>
           </DialogHeader>
           <fetcher.Form method='post'>
@@ -342,7 +342,7 @@ export function LNFMS() {
                 취소
               </Button>
               <Button type='submit' variant='destructive'>
-                삭제
+                폐기
               </Button>
             </DialogFooter>
           </fetcher.Form>
