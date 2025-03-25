@@ -9,9 +9,25 @@
 - [x] 분실물 조회 및 관리 시스템
 - [x] 급식 조회 시스템
 
-## 3. 개발 및 관리 가이드
+## 3. 설치 및 관리 가이드
 
 ### 3.1. 설치 및 설정
+
+설치전에, 루트 폴더에 `.env` 파일을 생성하여 다음과 같은 환경 변수를 설정해야 합니다.
+
+```env
+VITE_DATABASE_URL=file:ABSOLUTE_PATH_TO_DB_FILE
+VITE_SESSION_SECRET=DO_NOT_USE_IN_PRODUCTION
+VITE_STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILE_DIRECTORY
+VITE_NEIS_API_KEY=YOUR_NEIS_API_KEY
+```
+
+각각의 변수의 의미는 다음과 같습니다.
+
+`VITE_DATABASE_URL`: 데이터 베이스 파일 위치입니다 "file:경로" 형태로 저장해주세요. 추천: (file:./db.db)
+`VITE_SESSION_SECRET`: 세션을 생성할 때 쓰이는 시크릿 키입니다.
+`VITE_STATIC_FILE_PATH`: 정적 폴더 위치입니다. 추천: (./static)
+`VITE_NEIS_API_KEY`: 나이스 API키 입니다.
 
 본 프로젝트에서는 데이터를 저장하기 위해서 `drizzle-orm`을 사용합니다. 따라서, 다음과 같은 명령어를 실행하여 필요한 패키지를 설치하고 데이터베이스를 생성해야 합니다.
 
@@ -21,15 +37,6 @@ touch db.db
 pnpm drizzle-kit generate
 pnpm drizzle-kit push
 pnpm dev
-```
-
-또한, `.env` 파일을 생성하여 다음과 같은 환경 변수를 설정해야 합니다.
-
-```env
-VITE_DATABASE_URL=file:ABSOLUTE_PATH_TO_DB_FILE
-VITE_SESSION_SECRET=DO_NOT_USE_IN_PRODUCTION
-VITE_STATIC_FILE_PATH=ABSOLUTE_PATH_TO_STATIC_FILE_DIRECTORY
-VITE_NEIS_API_KEY=YOUR_NEIS_API_KEY
 ```
 
 ### 3.2. DB 관리
