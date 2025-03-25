@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LNFMSCard } from './LNFMSCard';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { ArrowLeft, LogOut, Search, Trash2 } from 'lucide-react';
+import { House, LogOut, Search, Trash2 } from 'lucide-react';
 import { LuSquareCheckBig, LuPlus } from 'react-icons/lu';
 import { FaCheck } from 'react-icons/fa6';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -99,9 +99,9 @@ export function LNFMS() {
                 to='/'
                 className='hover:bg-muted cursor-pointer rounded-full p-2 transition-colors'
               >
-                <ArrowLeft size={20} />
+                <House size={20} />
               </Link>
-              <CardTitle className='text-2xl select-none'>LNFMS</CardTitle>
+              <CardTitle className='pb-1.5 text-2xl select-none'>LNFMS</CardTitle>
             </div>
             <div className='flex items-center gap-4'>
               {/* 다중선택시 나오는 구역 */}
