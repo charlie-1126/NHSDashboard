@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle, Trash2 } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Save, X, LoaderCircle, Trash2, PackagePlus } from 'lucide-react';
 import { format, add } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import * as React from 'react';
@@ -85,14 +85,16 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className='text-2xl font-bold'>{isNewItem ? '새 분실물 등록' : '분실물 상세 정보'}</h1>
+        <h1 className='text-2xl font-bold select-none'>
+          {isNewItem ? '새 분실물 등록' : '분실물 상세 정보'}
+        </h1>
       </div>
 
       <fetcher.Form method='post' encType='multipart/form-data'>
         <input type='hidden' name='uuid' value={formData.uuid} />
         <Card>
           <CardHeader>
-            <CardTitle className='text-lg'>기본 정보</CardTitle>
+            <CardTitle className='text-lg select-none'>기본 정보</CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
             {/* 이미지 업로드 */}
@@ -113,7 +115,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                       type='button'
                       variant='destructive'
                       size='icon'
-                      className='absolute top-0 right-0 h-6 w-6 translate-x-1/2 -translate-y-1/2 rounded-full'
+                      className='absolute top-0 right-0 h-6 w-6 translate-x-1/2 -translate-y-1/2 rounded-full select-none'
                       onClick={() => {
                         setImagePreview(null);
                         setFormData((prev) => ({ ...prev, imageUrl: '' }));
@@ -130,7 +132,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                     <img
                       src={'/image/noImg.gif'}
                       alt='이미지 없음'
-                      className='h-48 w-48 cursor-pointer rounded-md border-2 border-gray-300 object-cover'
+                      className='h-48 w-48 cursor-pointer rounded-md border-2 border-gray-300 object-cover select-none'
                       onClick={handleImageClick}
                     />
                   </div>
@@ -316,7 +318,7 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
               type='button'
               variant='outline'
               onClick={() => navigate('/LNFMS')}
-              className='cursor-pointer'
+              className='cursor-pointer select-none'
             >
               취소
             </Button>
@@ -325,16 +327,29 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
                 type='button'
                 variant='destructive'
                 onClick={() => setDeleteDialogOpen(true)}
-                className='cursor-pointer'
+                className={`cursor-pointer select-none ${isNewItem ? 'invisible' : ''}`}
               >
                 <Trash2 className={`mr-2 h-4 w-4`} />
                 삭제
               </Button>
-              <Button type='submit' className='cursor-pointer'>
-                <Save className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`} />
-                <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
-                저장
-              </Button>
+              {isNewItem ? (
+                <Button
+                  type='submit'
+                  className={`cursor-pointer bg-green-500 text-white select-none hover:bg-green-600`}
+                >
+                  <PackagePlus
+                    className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`}
+                  />
+                  <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
+                  등록
+                </Button>
+              ) : (
+                <Button type='submit' className='cursor-pointer select-none'>
+                  <Save className={`mr-2 h-4 w-4 ${fetcher.state !== 'idle' ? 'hidden' : ''}`} />
+                  <LoaderCircle className={fetcher.state !== 'idle' ? 'animate-spin' : 'hidden'} />
+                  저장
+                </Button>
+              )}
             </div>
           </CardFooter>
         </Card>

@@ -31,7 +31,7 @@ export function Dashboard({
   const currentItems = items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
-    <div className='flex h-screen min-h-0 flex-col p-4'>
+    <div className='pointer-events-none flex h-screen min-h-0 flex-col p-4 select-none'>
       <div className='flex h-full flex-grow flex-col gap-4 md:flex-row'>
         {/* LNF 영역 */}
         <div className='h-full flex-grow md:w-7/10'>

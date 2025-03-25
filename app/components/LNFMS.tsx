@@ -101,7 +101,7 @@ export function LNFMS() {
               >
                 <ArrowLeft size={20} />
               </Link>
-              <CardTitle className='text-2xl'>LNFMS</CardTitle>
+              <CardTitle className='text-2xl select-none'>LNFMS</CardTitle>
             </div>
             <div className='flex items-center gap-4'>
               {/* 다중선택시 나오는 구역 */}
@@ -149,7 +149,7 @@ export function LNFMS() {
               {/* 로그아웃 버튼 */}
               <Link
                 to='/logout'
-                className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors'
+                className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors select-none'
               >
                 <LogOut size={18} />
                 Logout
@@ -188,7 +188,7 @@ export function LNFMS() {
                 />
               ))
             ) : (
-              <div className='text-muted-foreground flex flex-col items-center justify-center pb-15 text-center'>
+              <div className='text-muted-foreground flex flex-col items-center justify-center pb-15 text-center select-none'>
                 <Search className='mb-2 h-10 w-10 opacity-20' />
                 <p>검색 결과가 없습니다</p>
                 <p className='text-sm'>필터를 조정하거나 초기화해 보세요</p>
@@ -198,7 +198,7 @@ export function LNFMS() {
         </Card>
       </div>
 
-      <div className='pt-2'>
+      <div className='pt-2 select-none'>
         <LNFMSPagination />
       </div>
 

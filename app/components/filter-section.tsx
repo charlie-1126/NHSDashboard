@@ -68,7 +68,7 @@ export function FilterSection() {
   };
 
   return (
-    <Card className='gap-0 p-0'>
+    <Card className='cursor-pointer gap-0 p-0 select-none'>
       <CardTitle
         className='px-3 py-1 md:py-2'
         onClick={() => {
@@ -85,7 +85,7 @@ export function FilterSection() {
                 e.stopPropagation();
                 resetFilters();
               }}
-              className='text-muted-foreground h-7 px-2 text-xs'
+              className='text-muted-foreground h-7 cursor-pointer px-2 text-xs'
             >
               <FilterX size={14} className='mr-1' />
               초기화
@@ -94,7 +94,7 @@ export function FilterSection() {
               variant='ghost'
               size='icon'
               onClick={() => setIsExpanded(!isExpanded)}
-              className='h-7 w-7'
+              className='h-7 w-7 cursor-pointer'
             >
               {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </Button>
