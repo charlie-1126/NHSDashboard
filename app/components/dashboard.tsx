@@ -7,6 +7,7 @@ import '../styles/font.css';
 import type { MealResponse } from '~/lib/neis-api';
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { PackageX } from 'lucide-react';
 
 export function Dashboard({
   items,
@@ -40,17 +41,24 @@ export function Dashboard({
               <CardTitle className='pb-1 text-center text-3xl'>분실물 안내 (LNF)</CardTitle>
             </CardHeader>
             <CardContent className='flex h-full flex-col'>
-              <div className='grid h-full grid-cols-2 grid-rows-2 gap-4'>
-                {currentItems.map((item, index) => (
-                  <div key={index} className='h-auto'>
-                    <LNFDashboardCard item={item} />
-                  </div>
-                ))}
-                {/* 빈 셀을 추가하여 그리드를 채움 */}
-                {Array.from({ length: Math.max(0, 4 - currentItems.length) }).map((_, index) => (
-                  <div key={`empty-${index}`} className='h-auto'></div>
-                ))}
-              </div>
+              {items.length == 0 ? (
+                <div className='text-muted-foreground flex h-full flex-col items-center justify-center pb-20 text-center select-none'>
+                  <PackageX className='mb-2 h-10 w-10 opacity-20' />
+                  <p>등록된 분실물이 없습니다.</p>
+                </div>
+              ) : (
+                <div className='grid h-full grid-cols-2 grid-rows-2 gap-4'>
+                  {currentItems.map((item, index) => (
+                    <div key={index} className='h-auto'>
+                      <LNFDashboardCard item={item} />
+                    </div>
+                  ))}
+                  {/* 빈 셀을 추가하여 그리드를 채움 */}
+                  {Array.from({ length: Math.max(0, 4 - currentItems.length) }).map((_, index) => (
+                    <div key={`empty-${index}`} className='h-auto'></div>
+                  ))}
+                </div>
+              )}
               {totalPages > 1 && (
                 <div className='mt-4 flex justify-center space-x-1'>
                   {Array.from({ length: totalPages }).map((_, index) => (
