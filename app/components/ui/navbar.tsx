@@ -4,13 +4,38 @@ import { Menu, House } from 'lucide-react';
 import { Button } from './button';
 import { Sheet, SheetContent, SheetTrigger } from './sheet';
 
-const navLinks = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/LNFMS', label: 'LNFMS' },
-];
+interface navLinksType {
+  href: string;
+  label: string;
+}
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [navLinks, setNavLinks] = React.useState<navLinksType[]>([]);
+
+  React.useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    checkIsMobile();
+    const handleResize = () => checkIsMobile();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  React.useEffect(() => {
+    if (isMobile) {
+      setNavLinks([{ href: '/LNFMS', label: 'LNFMS' }]);
+    } else {
+      setNavLinks([
+        { href: '/dashboard', label: 'Dashboard' },
+        { href: '/LNFMS', label: 'LNFMS' },
+      ]);
+    }
+  }, [isMobile]);
 
   return (
     <div className='flex h-16 w-full items-center justify-between px-2'>
