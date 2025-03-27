@@ -5,6 +5,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import type { itemTable } from '~/db';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Navbar } from './ui/navbar';
+import { Separator } from './ui/separator';
 import { PackageX } from 'lucide-react';
 
 export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
@@ -19,6 +20,7 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
       <div>
         <Navbar />
       </div>
+      <Separator className='w-full' />
       {items.length == 0 ? (
         <div className='text-muted-foreground flex h-full flex-col items-center justify-center pb-20 text-center select-none'>
           <PackageX className='mb-2 h-10 w-10 opacity-20' />
@@ -29,7 +31,9 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <div className='h-full overflow-y-auto'>
             <div className='grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {items.map((item, index) => (
-                <LNFHomeCard key={index} item={item} onClick={() => handleCardClick(item)} />
+                <div className={`mt-4`}>
+                  <LNFHomeCard key={index} item={item} onClick={() => handleCardClick(item)} />
+                </div>
               ))}
             </div>
           </div>

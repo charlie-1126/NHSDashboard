@@ -40,10 +40,10 @@ export function Navbar() {
   return (
     <div className='flex h-16 w-full items-center justify-between px-2'>
       <div className='flex items-center justify-center gap-2 text-xl font-bold'>
-        <Link to={'/'}>
+        <Link to={'/'} className='flex gap-2'>
           <House />
+          <span className='select-none'>능주고 분실물 안내 시스템</span>
         </Link>
-        <span className='select-none'>능주고 분실물 안내 시스템</span>
       </div>
       {/* 데스크톱 네비게이션 */}
       <nav className='hidden items-center gap-6 md:flex'>

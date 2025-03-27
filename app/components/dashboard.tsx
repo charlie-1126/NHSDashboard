@@ -38,7 +38,7 @@ export function Dashboard({
         <div className='h-full flex-grow md:w-7/10'>
           <Card className='h-full gap-0'>
             <CardHeader className='pb-7'>
-              <CardTitle className='pb-1 text-center text-3xl'>분실물 안내 (LNF)</CardTitle>
+              <CardTitle className='pb-1 text-center text-3xl'>분실물 안내</CardTitle>
             </CardHeader>
             <CardContent className='flex h-full flex-col'>
               {items.length == 0 ? (
@@ -87,12 +87,17 @@ export function Dashboard({
             <CardContent className='relative h-full'>
               {meals.map((meal, index) => (
                 <div className='pb-4' key={index}>
-                  <h3 className={`mb-2 text-xl font-bold ${index !== 0 ? 'pt-2' : ''}`}>
-                    {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
-                      locale: ko,
-                    })}{' '}
-                    {meal.MMEAL_SC_NM}
-                  </h3>
+                  <div className={`mb-2 flex items-center ${index !== 0 ? 'pt-2' : ''}`}>
+                    <h3 className={`text-xl font-bold`}>
+                      {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
+                        locale: ko,
+                      })}{' '}
+                      {meal.MMEAL_SC_NM}
+                    </h3>
+                    <span className='text-muted-foreground ml-2.5 pt-1 font-bold'>
+                      {meal.CAL_INFO}
+                    </span>
+                  </div>
                   <Card className='pt-2.5 pb-2.5'>
                     <CardContent>
                       <ul className='list-inside list-disc marker:text-gray-300'>

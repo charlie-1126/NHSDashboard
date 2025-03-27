@@ -2,7 +2,7 @@ import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardFooter } from './ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import {
   Dialog,
@@ -93,9 +93,6 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
       <fetcher.Form method='post' encType='multipart/form-data'>
         <input type='hidden' name='uuid' value={formData.uuid} />
         <Card>
-          <CardHeader>
-            <CardTitle className='text-lg select-none'>기본 정보</CardTitle>
-          </CardHeader>
           <CardContent className='space-y-4'>
             {/* 이미지 업로드 */}
             <div className='space-y-2'>
@@ -225,10 +222,10 @@ export function ItemDetail({ item, id }: ItemDetailProps) {
               </Popover>
             </div>
 
-            {/* 폐기 일자 */}
+            {/* 폐기 예정일 */}
             <div className='space-y-2'>
               <Label>
-                폐기 일자 <span className='font-bold text-red-500'>*</span>
+                폐기 예정일 <span className='font-bold text-red-500'>*</span>
               </Label>
               <input type='hidden' name='processedAt' value={formData.processedAt.toISOString()} />
               <Popover>

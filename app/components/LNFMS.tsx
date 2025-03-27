@@ -93,7 +93,7 @@ export function LNFMS() {
       <div className='flex-1 overflow-y-auto'>
         <Card className='flex h-full flex-col gap-4 pb-0'>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 px-2.5 pr-5 md:px-6'>
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center justify-center gap-2'>
               {/* 뒤로가기 버튼 */}
               <Link
                 to='/'
@@ -101,7 +101,7 @@ export function LNFMS() {
               >
                 <House size={20} />
               </Link>
-              <CardTitle className='pb-1.5 text-2xl select-none'>LNFMS</CardTitle>
+              <CardTitle className='text-2xl leading-none select-none'>LNFMS</CardTitle>
             </div>
             <div className='flex items-center gap-4'>
               {/* 다중선택시 나오는 구역 */}
