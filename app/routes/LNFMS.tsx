@@ -12,7 +12,7 @@ export function meta() {
 }
 
 const filterSchema = z.object({
-  status: z.enum(['ALL', 'PENDING', 'RETURNED', 'DISCARDED']).default('ALL'),
+  status: z.enum(['ALL', 'PENDING', 'RETURNED', 'DISCARDED']).default('PENDING'),
   name: z.string().nullish(),
   reporter: z.string().nullish(),
   receiver: z.string().nullish(),

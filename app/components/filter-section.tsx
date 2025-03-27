@@ -242,7 +242,7 @@ export function FilterSection() {
               상태
             </Label>
             <Select
-              value={filters.status || 'ALL'}
+              value={filters.status || 'PENDING'}
               onValueChange={(value) => handleFilterChange({ ...filters, status: value })}
             >
               <SelectTrigger id='status' className='h-8 text-xs md:text-sm'>
