@@ -2,20 +2,17 @@ import { useState, useEffect } from 'react';
 import { LNFDashboardCard } from './LNFDashboardCard';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
-import type { itemTable } from '~/db';
 import '../styles/font.css';
-import type { MealResponse } from '~/lib/neis-api';
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { PackageX } from 'lucide-react';
+import { useLoaderData, useRevalidator } from 'react-router';
+import type { loader } from '~/routes/dashboard';
 
-export function Dashboard({
-  items,
-  meals,
-}: {
-  items: (typeof itemTable.$inferSelect)[];
-  meals: MealResponse['row'];
-}) {
+export function Dashboard() {
+  const { items, meals } = useLoaderData<typeof loader>();
+  const revalidator = useRevalidator();
+
   const itemsPerPage = 4;
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
@@ -28,6 +25,11 @@ export function Dashboard({
     }, 5000);
     return () => clearInterval(interval);
   }, [totalPages]);
+
+  useEffect(() => {
+    const interval = setInterval(() => revalidator.revalidate(), 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const currentItems = items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 

@@ -1,7 +1,6 @@
 import { Dashboard as DashboardComponent } from '../components/dashboard';
 import { db, itemTable } from '~/db';
 import { eq } from 'drizzle-orm';
-import { useLoaderData } from 'react-router';
 import { NeisAPIService } from '~/lib/neis-api';
 import { add, format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -42,7 +41,5 @@ export async function loader() {
 }
 
 export default function DashboardPage() {
-  const { items, meals } = useLoaderData<typeof loader>();
-
-  return <DashboardComponent items={items} meals={meals} />;
+  return <DashboardComponent />;
 }
