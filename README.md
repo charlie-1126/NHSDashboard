@@ -24,10 +24,10 @@ VITE_NEIS_API_KEY=YOUR_NEIS_API_KEY
 
 각각의 변수의 의미는 다음과 같습니다.
 
-`VITE_DATABASE_URL`: 데이터 베이스 파일 위치입니다 "file:경로" 형태로 저장해주세요. 추천: (file:./db.db)
-`VITE_SESSION_SECRET`: 세션을 생성할 때 쓰이는 시크릿 키입니다.
-`VITE_STATIC_FILE_PATH`: 정적 폴더 위치입니다. 추천: (./static)
-`VITE_NEIS_API_KEY`: 나이스 API키 입니다.
+- `VITE_DATABASE_URL`: 데이터 베이스 파일 위치입니다 "file:경로" 형태로 저장해주세요. 추천: (file:./db.db)
+- `VITE_SESSION_SECRET`: 세션을 생성할 때 쓰이는 시크릿 키입니다.
+- `VITE_STATIC_FILE_PATH`: 정적 폴더 위치입니다. 추천: (./static)
+- `VITE_NEIS_API_KEY`: 나이스 API키 입니다.
 
 본 프로젝트에서는 데이터를 저장하기 위해서 `drizzle-orm`을 사용합니다. 따라서, 다음과 같은 명령어를 실행하여 필요한 패키지를 설치하고 데이터베이스를 생성해야 합니다.
 
