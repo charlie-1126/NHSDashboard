@@ -35,7 +35,7 @@ export function LNFMSCard({
 
   return (
     <div
-      className={`border-border relative flex h-36 cursor-pointer flex-row overflow-hidden rounded-xl border transition-shadow hover:shadow-lg ${className}`}
+      className={`border-border relative flex h-36 cursor-pointer flex-row overflow-hidden rounded-xl border transition-shadow select-none hover:shadow-lg ${className}`}
     >
       <div className='aspect-square h-full'>
         <img

@@ -7,6 +7,7 @@ import '../styles/font.css';
 import type { MealResponse } from '~/lib/neis-api';
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { PackageX } from 'lucide-react';
 
 export function Dashboard({
   items,
@@ -31,26 +32,33 @@ export function Dashboard({
   const currentItems = items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
-    <div className='flex h-screen min-h-0 flex-col p-4'>
+    <div className='pointer-events-none flex h-screen min-h-0 flex-col p-4 select-none'>
       <div className='flex h-full flex-grow flex-col gap-4 md:flex-row'>
         {/* LNF 영역 */}
         <div className='h-full flex-grow md:w-7/10'>
           <Card className='h-full gap-0'>
             <CardHeader className='pb-7'>
-              <CardTitle className='pb-1 text-center text-3xl'>분실물 안내 (LNF)</CardTitle>
+              <CardTitle className='pb-1 text-center text-3xl'>분실물 안내</CardTitle>
             </CardHeader>
             <CardContent className='flex h-full flex-col'>
-              <div className='grid h-full grid-cols-2 grid-rows-2 gap-4'>
-                {currentItems.map((item, index) => (
-                  <div key={index} className='h-auto'>
-                    <LNFDashboardCard item={item} />
-                  </div>
-                ))}
-                {/* 빈 셀을 추가하여 그리드를 채움 */}
-                {Array.from({ length: Math.max(0, 4 - currentItems.length) }).map((_, index) => (
-                  <div key={`empty-${index}`} className='h-auto'></div>
-                ))}
-              </div>
+              {items.length == 0 ? (
+                <div className='text-muted-foreground flex h-full flex-col items-center justify-center pb-20 text-center select-none'>
+                  <PackageX className='mb-2 h-10 w-10 opacity-20' />
+                  <p>등록된 분실물이 없습니다.</p>
+                </div>
+              ) : (
+                <div className='grid h-full grid-cols-2 grid-rows-2 gap-4'>
+                  {currentItems.map((item, index) => (
+                    <div key={index} className='h-auto'>
+                      <LNFDashboardCard item={item} />
+                    </div>
+                  ))}
+                  {/* 빈 셀을 추가하여 그리드를 채움 */}
+                  {Array.from({ length: Math.max(0, 4 - currentItems.length) }).map((_, index) => (
+                    <div key={`empty-${index}`} className='h-auto'></div>
+                  ))}
+                </div>
+              )}
               {totalPages > 1 && (
                 <div className='mt-4 flex justify-center space-x-1'>
                   {Array.from({ length: totalPages }).map((_, index) => (
@@ -79,12 +87,17 @@ export function Dashboard({
             <CardContent className='relative h-full'>
               {meals.map((meal, index) => (
                 <div className='pb-4' key={index}>
-                  <h3 className={`mb-2 text-xl font-bold ${index !== 0 ? 'pt-2' : ''}`}>
-                    {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
-                      locale: ko,
-                    })}{' '}
-                    {meal.MMEAL_SC_NM}
-                  </h3>
+                  <div className={`mb-2 flex items-center ${index !== 0 ? 'pt-2' : ''}`}>
+                    <h3 className={`text-xl font-bold`}>
+                      {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
+                        locale: ko,
+                      })}{' '}
+                      {meal.MMEAL_SC_NM}
+                    </h3>
+                    <span className='text-muted-foreground ml-2.5 pt-1 font-bold'>
+                      {meal.CAL_INFO}
+                    </span>
+                  </div>
                   <Card className='pt-2.5 pb-2.5'>
                     <CardContent>
                       <ul className='list-inside list-disc marker:text-gray-300'>

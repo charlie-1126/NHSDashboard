@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { LNFHomeCard } from './LNFHomeCard';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Dialog, DialogContent } from './ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import type { itemTable } from '~/db';
-import { Link } from 'react-router';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { Navbar } from './ui/navbar';
+import { Separator } from './ui/separator';
+import { PackageX } from 'lucide-react';
 
 export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -16,23 +17,28 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
 
   return (
     <div className='bg-background flex h-screen flex-col p-4'>
-      <Card className='flex h-full min-h-[80vh] flex-col shadow-md'>
-        <CardHeader className='border-b pb-4'>
-          <CardTitle className='text-primary text-center text-2xl font-bold sm:text-2xl'>
-            능주고 분실물 안내 서비스
-          </CardTitle>
-        </CardHeader>
-        <CardContent className='flex-grow overflow-hidden p-4 py-0'>
-          <div className='h-full overflow-y-auto pr-2'>
+      <div>
+        <Navbar />
+      </div>
+      <Separator className='w-full' />
+      {items.length == 0 ? (
+        <div className='text-muted-foreground flex h-full flex-col items-center justify-center pb-20 text-center select-none'>
+          <PackageX className='mb-2 h-10 w-10 opacity-20' />
+          <p>등록된 분실물이 없습니다.</p>
+        </div>
+      ) : (
+        <div className='flex h-full min-h-[80vh] flex-col'>
+          <div className='h-full overflow-y-auto'>
             <div className='grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {items.map((item, index) => (
-                <LNFHomeCard key={index} item={item} onClick={() => handleCardClick(item)} />
+                <div className={`mt-4`}>
+                  <LNFHomeCard key={index} item={item} onClick={() => handleCardClick(item)} />
+                </div>
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
-
+        </div>
+      )}
       <div onClick={() => setSelectedImage(null)}>
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
           <VisuallyHidden>
@@ -45,16 +51,6 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           </DialogContent>
         </Dialog>
       </div>
-      <Link to='/dashboard'>
-        <div className='text-muted-foreground absolute top-12 left-10 z-50 hidden text-sm lg:block'>
-          Dashboard로 전환
-        </div>
-      </Link>
-      <Link to='/LNFMS'>
-        <div className='text-muted-foreground absolute top-5 right-7 z-50 text-sm md:top-12 md:right-10'>
-          LNFMS
-        </div>
-      </Link>
     </div>
   );
 }
