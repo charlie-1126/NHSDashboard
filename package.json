@@ -11,7 +11,7 @@
     "format": "prettier --write ./app/**/*.{ts,tsx,js,jsx,json,md}",
     "drizzle-kit": "drizzle-kit",
     "preinstall": "npx only-allow pnpm",
-    "start:prod": "pnpm drizzle-kit generate && pnpm drizzle-kit push && rm drizzle.config.ts && rm .env && rm -r /app/db && pnpm start"
+    "start:prod": "pnpm drizzle-kit generate && pnpm drizzle-kit push && rm drizzle.config.ts && rm .env && rm -r /app/app/db && pnpm start"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
