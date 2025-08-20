@@ -1,5 +1,4 @@
 import { Link, useFetcher, useNavigate, useLoaderData } from 'react-router';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LNFMSCard } from './LNFMSCard';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -90,125 +89,135 @@ export function LNFMS() {
 
   return (
     <div className='flex h-screen flex-col p-2 md:p-4 md:pb-2'>
-      <div className='flex-1 overflow-y-auto'>
-        <Card className='flex h-full flex-col gap-4 pb-0'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 px-2.5 pr-5 md:px-6'>
-            <div className='flex items-center justify-center gap-2'>
-              {/* 뒤로가기 버튼 */}
+      <div className='from-background/50 via-background/30 to-background/60 supports-[backdrop-filter]:bg-background/40 flex-1 overflow-hidden rounded-2xl bg-gradient-to-br backdrop-blur'>
+        <div className='flex h-full flex-col'>
+          {/* Sticky Header */}
+          <div className='supports-[backdrop-filter]:bg-background/60 border-border/60 bg-background/70 sticky top-0 z-20 flex items-center justify-between gap-4 border-b px-3 py-2 backdrop-blur md:px-6'>
+            <div className='flex items-center gap-2'>
               <Link
                 to='/'
-                className='hover:bg-muted cursor-pointer rounded-full p-2 transition-colors'
+                className='hover:bg-muted/70 rounded-full p-2 transition-colors'
+                aria-label='홈으로'
               >
                 <House size={20} />
               </Link>
-              <CardTitle className='text-2xl leading-none select-none'>LNFMS</CardTitle>
-            </div>
-            <div className='flex items-center gap-4'>
-              {/* 다중선택시 나오는 구역 */}
-              <div
-                className={`flex gap-0 transition-all duration-300 ease-out md:gap-2 ${
-                  multipleSelection
-                    ? 'translate-x-3 opacity-100'
-                    : 'pointer-events-none translate-x-10 opacity-0'
-                }`}
+              <Link
+                to='/'
+                className='hover:text-primary text-xl font-semibold tracking-tight transition-colors md:text-2xl'
+                aria-label='홈으로'
               >
-                {/* 다중 반환 버튼 */}
-                <button
-                  onClick={() => {
-                    setMultipleReturnDialogOpen(true);
-                  }}
-                  className='cursor-pointer rounded-full p-1.5 text-green-400 transition-colors hover:bg-green-100'
-                  aria-label='다중반환'
-                >
-                  <FaCheck size={20} />
-                </button>
-                {/* 다중 삭제 버튼 */}
-                <button
-                  onClick={() => setMultipleDeleteDialogOpen(true)}
-                  className='cursor-pointer rounded-full p-1.5 text-red-500 transition-colors hover:bg-red-100'
-                  aria-label='다중삭제'
-                >
-                  <Trash2 size={20} />
-                </button>
-              </div>
-              {/* 다중 선택 버튼 */}
+                LNFMS
+              </Link>
+              {multipleSelection && (
+                <span className='bg-primary/10 text-primary ml-1 rounded-full px-2 py-0.5 text-xs font-medium'>
+                  {selectList.length}개 선택
+                </span>
+              )}
+            </div>
+            <div className='flex items-center gap-2 md:gap-4'>
+              {multipleSelection && (
+                <div className='flex items-center gap-2'>
+                  <button
+                    onClick={() => setMultipleReturnDialogOpen(true)}
+                    className='flex h-8 items-center gap-1 rounded-full bg-emerald-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-emerald-500'
+                  >
+                    <FaCheck size={14} /> 반환
+                  </button>
+                  <button
+                    onClick={() => setMultipleDeleteDialogOpen(true)}
+                    className='flex h-8 items-center gap-1 rounded-full bg-rose-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-rose-500'
+                  >
+                    <Trash2 size={14} /> 폐기
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMultipleSelection(false);
+                      setSelectList([]);
+                    }}
+                    className='text-muted-foreground hover:text-foreground text-xs'
+                  >
+                    취소
+                  </button>
+                </div>
+              )}
               <button
                 onClick={() => {
-                  if (multipleSelection) {
-                    setSelectList([]);
-                  }
+                  if (multipleSelection) setSelectList([]);
                   setMultipleSelection(!multipleSelection);
                 }}
-                className={`flex cursor-pointer items-center gap-1 rounded-full p-1.5 text-sm text-black transition-colors ${
-                  multipleSelection ? 'bg-blue-100' : 'hover:bg-gray-100'
+                className={`flex h-8 items-center gap-1 rounded-full px-3 text-xs font-medium transition-colors ${
+                  multipleSelection
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-muted hover:bg-muted/70'
                 }`}
               >
-                <LuSquareCheckBig size={18} />
+                <LuSquareCheckBig size={16} />
+                선택
               </button>
-
-              {/* 로그아웃 버튼 */}
               <Link
                 to='/logout'
-                className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors select-none'
+                className='text-muted-foreground hover:text-foreground flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors'
               >
-                <LogOut size={18} />
-                Logout
+                <LogOut size={16} /> Logout
               </Link>
             </div>
-          </CardHeader>
+          </div>
 
-          {/* 필터 섹션 */}
-          <CardContent className='px-2 py-0 md:px-6'>
+          {/* Filter Section (collapsible already inside) */}
+          <div className='border-border/60 border-b border-dashed px-2 py-1.5 md:px-6 md:py-2'>
             <FilterSection />
-          </CardContent>
+          </div>
 
-          {/* 분실물 카드 */}
-          <CardContent
-            className={`flex-1 space-y-4 overflow-y-auto px-2 pb-4 md:px-6 ${items.length > 0 ? '' : 'flex items-center justify-center'}`}
-          >
-            {items.length > 0 ? (
-              items.map((item, index) => (
-                <LNFMSCard
-                  onClick={() => cardClick(index)}
-                  key={index}
-                  item={item}
-                  onReturn={() => {
-                    setReturnIndex(index);
-                    setReturnDialogOpen(true);
-                  }}
-                  onDelete={() => {
-                    setDeleteIndex(index);
-                    setDeleteDialogOpen(true);
-                  }}
-                  onImageClick={() => {
-                    onImageClick(item);
-                  }}
-                  className={`cursor-pointer transition-colors ${selectList.includes(index) ? 'bg-blue-50' : ''}`}
-                  multiple={multipleSelection}
-                />
-              ))
-            ) : (
-              <div className='text-muted-foreground flex flex-col items-center justify-center pb-15 text-center select-none'>
-                <Search className='mb-2 h-10 w-10 opacity-20' />
-                <p>검색 결과가 없습니다</p>
-                <p className='text-sm'>필터를 조정하거나 초기화해 보세요</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className='pt-2 select-none'>
-        <LNFMSPagination />
+          {/* Scrollable list */}
+          <div className='custom-scrollbar relative flex-1 overflow-y-auto px-2 pt-1 pb-3 md:px-6 md:pt-2 md:pb-6'>
+            {/* subtle stripes */}
+            <div className='bg-[repeating-linear-gradient(135deg,theme(colors.muted/0.15),theme(colors.muted/0.15)_6px,transparent_6px,transparent_12px)] pointer-events-none absolute inset-0 [mask-image:radial-gradient(circle_at_center,black,transparent_85%)]' />
+            <div className='relative flex flex-col gap-2 md:gap-3'>
+              {items.length > 0 ? (
+                items.map((item, index) => (
+                  <LNFMSCard
+                    onClick={() => cardClick(index)}
+                    key={item.uuid ?? index}
+                    item={item}
+                    onReturn={() => {
+                      setReturnIndex(index);
+                      setReturnDialogOpen(true);
+                    }}
+                    onDelete={() => {
+                      setDeleteIndex(index);
+                      setDeleteDialogOpen(true);
+                    }}
+                    onImageClick={() => {
+                      onImageClick(item);
+                    }}
+                    selected={selectList.includes(index)}
+                    multiple={multipleSelection}
+                    index={index}
+                  />
+                ))
+              ) : (
+                <div className='text-muted-foreground relative z-10 flex h-[55vh] flex-col items-center justify-center gap-2 text-center'>
+                  <Search className='mb-1 h-10 w-10 opacity-20' />
+                  <p className='text-sm leading-none font-medium'>검색 결과가 없습니다</p>
+                  <p className='text-xs opacity-80'>필터를 조정하거나 초기화해 보세요</p>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Pagination */}
+          <div className='border-border/60 border-t border-dashed px-2 pt-1 md:px-6 md:pt-2'>
+            <LNFMSPagination />
+          </div>
+        </div>
       </div>
 
       {/* Create 플로팅 버튼 */}
       <Link
         to='/item/new'
-        className='fixed right-10 bottom-17 z-50 flex cursor-pointer items-center justify-center rounded-full bg-blue-400 p-3.5 text-white shadow-lg transition-colors hover:bg-blue-500 hover:shadow-sm'
-        aria-label='Create'
+        className='shadow-primary/30 fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg ring-1 ring-white/20 transition-all hover:scale-105 hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none'
+        aria-label='분실물 등록'
       >
-        <LuPlus size={24} />
+        <LuPlus size={28} />
       </Link>
 
       {/* 모달 */}

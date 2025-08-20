@@ -103,6 +103,9 @@ const receiverSchema = z
 
 export async function action({ request }: Route.ActionArgs) {
   try {
+    const session = await sessionStorage.getSession(request.headers.get('cookie'));
+    if (!session.get('user')) return redirect('/login');
+
     const formData = await request.formData();
 
     const type = formData.get('type');

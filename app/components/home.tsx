@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LNFHomeCard } from './LNFHomeCard';
+import { LNFItemCard } from './LNFItemCard';
 import { Dialog, DialogContent } from './ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import type { itemTable } from '~/db';
@@ -31,8 +31,8 @@ export function Home({ items }: { items: (typeof itemTable.$inferSelect)[] }) {
           <div className='h-full overflow-y-auto'>
             <div className='grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
               {items.map((item, index) => (
-                <div className={`mt-4`}>
-                  <LNFHomeCard key={index} item={item} onClick={() => handleCardClick(item)} />
+                <div key={item.uuid ?? index} className='mt-4'>
+                  <LNFItemCard item={item} onClick={() => handleCardClick(item)} variant='home' />
                 </div>
               ))}
             </div>

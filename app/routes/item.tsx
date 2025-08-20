@@ -60,6 +60,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
   try {
+    const session = await sessionStorage.getSession(request.headers.get('cookie'));
+    if (!session.get('user')) return redirect('/login');
+
     let image: ArrayBuffer | string | undefined;
     let imagePath: string | undefined;
 

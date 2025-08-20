@@ -56,6 +56,10 @@ export function FilterSection() {
   }, [searchParams]);
 
   const isFilterApplied = () => Object.keys(filters).length > 0;
+  const appliedFilterCount = React.useMemo(
+    () => Object.keys(filters).filter((k) => filters[k] && filters[k].trim() !== '').length,
+    [filters],
+  );
 
   const resetFilters = () => {
     setFilters({});
@@ -68,41 +72,53 @@ export function FilterSection() {
   };
 
   return (
-    <Card className='cursor-pointer gap-0 p-0 select-none'>
-      <CardTitle
-        className='px-3 py-1 md:py-2'
-        onClick={() => {
-          setIsExpanded(!isExpanded);
-        }}
-      >
+    <Card
+      className={`gap-0 rounded-xl bg-transparent p-0 shadow-none transition-colors ${
+        isFilterApplied()
+          ? 'border-primary/40 border'
+          : 'border-border/40 hover:border-border/60 border'
+      }`}
+    >
+      <CardTitle className='px-3 py-1.5 md:py-2'>
         <div className='flex items-center justify-between'>
-          <h3 className='text-base'>{isFilterApplied() ? 'Filter *' : 'Filter'}</h3>
-          <div className='flex gap-0 md:gap-2'>
+          <button
+            type='button'
+            aria-expanded={isExpanded}
+            onClick={() => setIsExpanded(!isExpanded)}
+            className='flex items-center gap-2 outline-none'
+          >
+            <h3 className='text-base font-semibold tracking-tight'>Filter</h3>
+            {appliedFilterCount > 0 && (
+              <span className='bg-primary/10 text-primary inline-flex min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium'>
+                {appliedFilterCount}
+              </span>
+            )}
+            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+          <div className='flex gap-1 md:gap-2'>
             <Button
               variant='ghost'
               size='sm'
+              disabled={!isFilterApplied()}
               onClick={(e) => {
                 e.stopPropagation();
                 resetFilters();
               }}
-              className='text-muted-foreground h-7 cursor-pointer px-2 text-xs'
+              className='text-muted-foreground h-7 cursor-pointer px-2 text-xs disabled:opacity-40'
             >
               <FilterX size={14} className='mr-1' />
               초기화
             </Button>
-            <Button
-              variant='ghost'
-              size='icon'
-              onClick={() => setIsExpanded(!isExpanded)}
-              className='h-7 w-7 cursor-pointer'
-            >
-              {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </Button>
           </div>
         </div>
       </CardTitle>
-      {isExpanded && (
-        <CardContent className='grid grid-cols-3 gap-1.5 px-2 py-1 md:gap-3 md:p-3'>
+      <div
+        className={`origin-top overflow-hidden transition-[max-height,opacity] duration-300 ${
+          isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+        aria-hidden={!isExpanded}
+      >
+        <CardContent className='grid grid-cols-1 gap-2 px-3 pt-1 pb-3 sm:grid-cols-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4'>
           <div className='space-y-1'>
             <Label htmlFor='name' className='text-xs'>
               이름
@@ -148,7 +164,7 @@ export function FilterSection() {
                   onSelect={(date) =>
                     handleFilterChange({
                       ...filters,
-                      startDate: date ? date.toISOString() : new Date().toISOString(),
+                      startDate: date ? date.toISOString() : '',
                     })
                   }
                   initialFocus
@@ -189,7 +205,7 @@ export function FilterSection() {
                   onSelect={(date) =>
                     handleFilterChange({
                       ...filters,
-                      endDate: date ? date.toISOString() : new Date().toISOString(),
+                      endDate: date ? date.toISOString() : '',
                     })
                   }
                   initialFocus
@@ -257,7 +273,7 @@ export function FilterSection() {
             </Select>
           </div>
         </CardContent>
-      )}
+      </div>
     </Card>
   );
 }

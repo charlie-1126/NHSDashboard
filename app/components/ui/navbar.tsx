@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Menu, House } from 'lucide-react';
 import { Button } from './button';
 import { Sheet, SheetContent, SheetTrigger } from './sheet';
@@ -37,6 +37,11 @@ export function Navbar() {
     }
   }, [isMobile]);
 
+  const location = useLocation();
+  function isActive(href: string) {
+    if (href === '/') return location.pathname === '/';
+    return location.pathname.startsWith(href);
+  }
   return (
     <div className='flex h-16 w-full items-center justify-between px-2'>
       <div className='flex items-center justify-center gap-2 text-xl font-bold'>
@@ -45,19 +50,28 @@ export function Navbar() {
           <span className='select-none'>능주고 분실물 안내 시스템</span>
         </Link>
       </div>
-      {/* 데스크톱 네비게이션 */}
-      <nav className='hidden items-center gap-6 md:flex'>
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            to={link.href}
-            className='hover:text-primary rounded-lg p-2 text-sm font-medium transition-colors hover:bg-gray-100'
-          >
-            {link.label}
-          </Link>
-        ))}
+      <nav className='hidden items-center gap-4 md:flex'>
+        {navLinks.map((link) => {
+          const active = isActive(link.href);
+          return (
+            <Link
+              key={link.href}
+              to={link.href}
+              className={`focus-visible:ring-ring relative rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+                active
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'hover:bg-accent hover:text-accent-foreground'
+              }`}
+              aria-current={active ? 'page' : undefined}
+            >
+              {link.label}
+              {active && (
+                <span className='bg-primary-foreground/70 absolute inset-x-2 -bottom-1 h-0.5 rounded-full md:inset-x-3' />
+              )}
+            </Link>
+          );
+        })}
       </nav>
-      {/* 모바일 네비게이션 */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild className='md:hidden'>
           <Button variant='ghost' size='icon'>
@@ -66,17 +80,25 @@ export function Navbar() {
           </Button>
         </SheetTrigger>
         <SheetContent side='right' className='w-[300px]'>
-          <div className='mt-8 flex flex-col gap-6 pl-6'>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className='hover:text-primary text-lg font-medium transition-colors'
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className='mt-8 flex flex-col gap-3 pl-2'>
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setOpen(false)}
+                  className={`rounded-md px-3 py-2 text-base font-medium transition-colors ${
+                    active
+                      ? 'bg-primary text-primary-foreground'
+                      : 'hover:bg-accent hover:text-accent-foreground'
+                  }`}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         </SheetContent>
       </Sheet>
