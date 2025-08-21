@@ -119,13 +119,13 @@ export function LNFMS() {
                 <div className='flex items-center gap-2'>
                   <button
                     onClick={() => setMultipleReturnDialogOpen(true)}
-                    className='flex h-8 items-center gap-1 rounded-full bg-emerald-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-emerald-500'
+                    className='flex h-8 cursor-pointer items-center gap-1 rounded-full bg-emerald-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-emerald-500'
                   >
                     <FaCheck size={14} /> 반환
                   </button>
                   <button
                     onClick={() => setMultipleDeleteDialogOpen(true)}
-                    className='flex h-8 items-center gap-1 rounded-full bg-rose-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-rose-500'
+                    className='flex h-8 cursor-pointer items-center gap-1 rounded-full bg-rose-500/90 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-rose-500'
                   >
                     <Trash2 size={14} /> 폐기
                   </button>
@@ -134,7 +134,7 @@ export function LNFMS() {
                       setMultipleSelection(false);
                       setSelectList([]);
                     }}
-                    className='text-muted-foreground hover:text-foreground text-xs'
+                    className='text-muted-foreground hover:text-foreground cursor-pointer text-xs'
                   >
                     취소
                   </button>
@@ -145,7 +145,7 @@ export function LNFMS() {
                   if (multipleSelection) setSelectList([]);
                   setMultipleSelection(!multipleSelection);
                 }}
-                className={`flex h-8 items-center gap-1 rounded-full px-3 text-xs font-medium transition-colors ${
+                className={`flex h-8 cursor-pointer items-center gap-1 rounded-full px-3 text-xs font-medium transition-colors ${
                   multipleSelection
                     ? 'bg-blue-500 text-white hover:bg-blue-600'
                     : 'bg-muted hover:bg-muted/70'

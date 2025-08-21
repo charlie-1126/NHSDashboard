@@ -79,13 +79,13 @@ export function FilterSection() {
           : 'border-border/40 hover:border-border/60 border'
       }`}
     >
-      <CardTitle className='px-3 py-1.5 md:py-2'>
-        <div className='flex items-center justify-between'>
+      <CardTitle className='px-3 py-1.5 md:py-2' onClick={() => setIsExpanded(!isExpanded)}>
+        <div className='flex cursor-pointer items-center justify-between'>
           <button
             type='button'
             aria-expanded={isExpanded}
             onClick={() => setIsExpanded(!isExpanded)}
-            className='flex items-center gap-2 outline-none'
+            className='flex cursor-pointer items-center gap-2 outline-none'
           >
             <h3 className='text-base font-semibold tracking-tight'>Filter</h3>
             {appliedFilterCount > 0 && (

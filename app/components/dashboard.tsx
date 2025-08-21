@@ -21,6 +21,20 @@ export function Dashboard() {
   const [scale, setScale] = useState(1);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
+  const MESSAGES: React.ReactNode[] = [
+    <>
+      습득한 분실물은 <strong className='font-bold'>방송실</strong>에서 보관 중입니다.
+    </>,
+    <>
+      <span className='font-semibold underline' aria-hidden='true'>
+        njdash.bmcyver.dev
+      </span>
+      으로 접속하여 분실물을 확인할 수 있습니다.
+    </>,
+  ];
+  const MESSAGE_TOGGLE_INTERVAL_MS = 8000;
+  const [showAltMessage, setShowAltMessage] = useState(false);
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduceMotionRef.current = mq.matches;
@@ -85,6 +99,26 @@ export function Dashboard() {
     return () => window.removeEventListener('resize', handleResize);
   }, [items.length, meals.length, currentPage]);
 
+  useEffect(() => {
+    let mounted = true;
+    const toggleIfVisible = () => {
+      if (!mounted) return;
+      if (document.visibilityState !== 'visible') return;
+      setShowAltMessage((prev) => !prev);
+    };
+
+    const interval = window.setInterval(toggleIfVisible, MESSAGE_TOGGLE_INTERVAL_MS);
+
+    const handleVisibility = () => {};
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, []);
+
   return (
     <div className='bg-background relative flex h-screen w-screen items-start justify-center overflow-hidden'>
       {/* 레터박스 영역 (16:9 종횡비 유지) - 상단 정렬 */}
@@ -131,6 +165,19 @@ export function Dashboard() {
                       >
                         분실물 안내
                       </CardTitle>
+                      <div
+                        role='note'
+                        aria-live='polite'
+                        className='text-muted-foreground mt-1 text-center text-sm'
+                      >
+                        <span
+                          className={
+                            reduceMotionRef.current ? '' : 'transition-opacity duration-500'
+                          }
+                        >
+                          {MESSAGES[showAltMessage ? 1 : 0]}
+                        </span>
+                      </div>
                     </CardHeader>
                     <CardContent className='flex h-full flex-col pt-0'>
                       {items.length == 0 ? (
