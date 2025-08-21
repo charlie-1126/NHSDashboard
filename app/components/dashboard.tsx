@@ -32,7 +32,6 @@ export function Dashboard() {
       으로 접속하여 분실물을 확인할 수 있습니다.
     </>,
   ];
-  const MESSAGE_TOGGLE_INTERVAL_MS = 8000;
   const [showAltMessage, setShowAltMessage] = useState(false);
 
   useEffect(() => {
@@ -48,6 +47,7 @@ export function Dashboard() {
     if (document.visibilityState !== 'visible') return;
     const interval = setInterval(() => {
       setCurrentPage((prev) => (prev + 1) % totalPages);
+      setShowAltMessage((prev) => !prev);
     }, 8000);
     return () => clearInterval(interval);
   }, [totalPages, currentPage]);
@@ -98,26 +98,6 @@ export function Dashboard() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [items.length, meals.length, currentPage]);
-
-  useEffect(() => {
-    let mounted = true;
-    const toggleIfVisible = () => {
-      if (!mounted) return;
-      if (document.visibilityState !== 'visible') return;
-      setShowAltMessage((prev) => !prev);
-    };
-
-    const interval = window.setInterval(toggleIfVisible, MESSAGE_TOGGLE_INTERVAL_MS);
-
-    const handleVisibility = () => {};
-    document.addEventListener('visibilitychange', handleVisibility);
-
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibility);
-    };
-  }, []);
 
   return (
     <div className='bg-background relative flex h-screen w-screen items-start justify-center overflow-hidden'>
