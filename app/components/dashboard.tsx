@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LNFItemCard } from './LNFItemCard';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import '../styles/font.css';
@@ -16,9 +16,7 @@ export function Dashboard() {
   const totalPages = Math.ceil(items.length / itemsPerPage);
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [now, setNow] = useState(() => new Date());
   const reduceMotionRef = useRef<boolean>(false);
-  const [scale, setScale] = useState(1);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const MESSAGES: React.ReactNode[] = [
@@ -66,11 +64,7 @@ export function Dashboard() {
   }, [totalPages, currentPage]);
 
   useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        setNow(new Date());
-      }
-    };
+    const handleVisibility = () => {};
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
@@ -82,86 +76,31 @@ export function Dashboard() {
 
   const currentItems = items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  const dateStr = format(now, 'yyyy.MM.dd (EEE)', { locale: ko });
-  const timeStr = format(now, 'HH:mm:ss');
-
-  useLayoutEffect(() => {
-    let resizeTimer: number | null = null;
-    const recompute = () => {
-      const el = contentRef.current;
-      if (!el) return;
-      const naturalHeight = el.scrollHeight;
-      const naturalWidth = el.scrollWidth;
-      const vh = window.innerHeight;
-      const vw = window.innerWidth;
-      const hScale = vh / naturalHeight;
-      const wScale = vw / naturalWidth;
-      const next = Math.min(1, hScale, wScale);
-      setScale(next);
-    };
-    requestAnimationFrame(recompute);
-    const handleResize = () => {
-      if (resizeTimer) window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(recompute, 120);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [items.length, meals.length, currentPage]);
-
   return (
     <div className='bg-background relative flex h-screen w-screen items-start justify-center overflow-hidden'>
-      {/* 레터박스 영역 (16:9 종횡비 유지) - 상단 정렬 */}
-      <div className='relative h-full max-h-full w-full max-w-full'>
+      <div className='relative h-full w-full'>
         <div className='absolute inset-0 flex items-start justify-center pt-0'>
-          <div className='aspect-video max-h-full w-full max-w-full'>
-            <div
-              ref={contentRef}
-              className='flex h-full w-full flex-col px-4 pt-1 pb-4'
-              style={
-                scale < 0.999
-                  ? {
-                      transform: `scale(${scale})`,
-                      transformOrigin: 'top center',
-                      willChange: 'transform',
-                    }
-                  : undefined
-              }
-            >
-              {/* 상단 바: 날짜 & 시간 */}
-              <div className='mb-1 flex items-end justify-between pr-2 pl-1 md:mb-2'>
-                <h1 className='text-2xl font-bold tracking-tight md:text-3xl xl:text-4xl'>
-                  NHS 분실물 & 급식
-                </h1>
-                <div className='text-right font-mono'>
-                  <div className='text-base font-semibold md:text-xl xl:text-2xl'>{timeStr}</div>
-                  <div className='text-muted-foreground text-[11px] md:text-sm xl:text-base'>
-                    {dateStr}
-                  </div>
-                </div>
-              </div>
-              <div className='flex h-full flex-1 flex-col gap-4 md:grid md:grid-cols-[7fr_3fr] md:gap-6'>
+          <div className='h-full w-full'>
+            <div ref={contentRef} className='flex h-full min-h-0 w-full flex-col px-4 pt-1 pb-4'>
+              <div className='flex h-full min-h-0 flex-1 flex-col gap-4 md:grid md:grid-cols-[7fr_3fr] md:gap-6'>
                 {/* LNF 영역 */}
                 <div
-                  className='flex h-full flex-col'
+                  className='flex h-full min-h-0 flex-col'
                   role='region'
                   aria-labelledby='lostfound-heading'
                 >
-                  <Card className='h-full gap-0'>
+                  <Card className='h-full gap-0 pt-2 xl:pt-4 2xl:pt-8'>
                     <CardHeader className='pb-3'>
                       <CardTitle
                         id='lostfound-heading'
-                        className='text-center text-3xl font-bold tracking-tight xl:text-4xl'
+                        className='text-center text-2xl font-bold tracking-tight xl:text-4xl 2xl:text-5xl'
                       >
                         분실물 안내
                       </CardTitle>
                       <div
                         role='note'
                         aria-live='polite'
-                        className='text-muted-foreground mt-1 text-center text-sm'
+                        className='text-muted-foreground mt-1 text-center text-sm font-semibold 2xl:text-xl'
                       >
                         <span
                           className={
@@ -172,7 +111,7 @@ export function Dashboard() {
                         </span>
                       </div>
                     </CardHeader>
-                    <CardContent className='flex h-full flex-col pt-0'>
+                    <CardContent className='flex h-full min-h-0 flex-1 flex-col pt-0'>
                       {items.length == 0 ? (
                         <div className='text-muted-foreground flex h-full flex-col items-center justify-center py-10 text-center select-none'>
                           <PackageX className='mb-2 h-10 w-10 opacity-30' />
@@ -209,7 +148,7 @@ export function Dashboard() {
                       )}
                       {totalPages > 1 && (
                         <div
-                          className='mt-4 flex justify-center gap-2'
+                          className='mt-2 flex justify-center gap-2'
                           role='tablist'
                           aria-label='분실물 페이지네이션'
                         >
@@ -237,17 +176,21 @@ export function Dashboard() {
                   </Card>
                 </div>
                 {/* Meal 영역 */}
-                <div className='flex h-full flex-col' role='region' aria-labelledby='meal-heading'>
-                  <Card className='h-full gap-0'>
+                <div
+                  className='flex h-full min-h-0 flex-col'
+                  role='region'
+                  aria-labelledby='meal-heading'
+                >
+                  <Card className='h-full gap-0 pt-2 xl:pt-4 2xl:pt-8'>
                     <CardHeader className='pb-2'>
                       <CardTitle
                         id='meal-heading'
-                        className='text-center text-3xl font-bold tracking-tight xl:text-4xl'
+                        className='text-center text-2xl font-bold tracking-tight xl:text-4xl 2xl:text-5xl'
                       >
                         급식 식단
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className='relative h-full space-y-5 pt-0'>
+                    <CardContent className='relative h-full min-h-0 flex-1 space-y-5 pt-0 2xl:pt-3'>
                       {meals.map((meal, index) => {
                         return (
                           <div
@@ -257,21 +200,21 @@ export function Dashboard() {
                             <div
                               className={`mb-2 flex items-end gap-2 ${index !== 0 ? 'pt-1' : ''}`}
                             >
-                              <h3 className='text-lg font-semibold tracking-tight md:text-xl xl:text-2xl'>
+                              <h3 className='text-base font-semibold tracking-tight xl:text-2xl 2xl:text-4xl'>
                                 {format(parse(meal.MLSV_YMD, 'yyyyMMdd', new Date()), 'M월 d일', {
                                   locale: ko,
                                 })}{' '}
                                 {meal.MMEAL_SC_NM}
                               </h3>
-                              <span className='text-muted-foreground mb-0.5 text-xs font-medium md:text-sm xl:text-base'>
+                              <span className='text-muted-foreground mb-0.5 text-sm font-semibold xl:text-lg 2xl:text-2xl'>
                                 {meal.CAL_INFO}
                               </span>
                             </div>
                             <Card className='pt-3 pb-3 transition-colors'>
                               <CardContent>
-                                <ul className='marker:text-primary/30 list-outside list-disc space-y-1.5 pl-5 text-[13px] leading-relaxed md:text-sm xl:space-y-2 xl:text-base 2xl:text-lg'>
+                                <ul className='marker:text-primary/30 list-outside list-disc space-y-1.5 pl-5 text-sm leading-relaxed font-semibold xl:space-y-2 xl:text-lg 2xl:text-2xl'>
                                   {meal.DDISH_NM.split('<br/>').map((dish, di) => {
-                                    const t = dish.trim();
+                                    const t = dish.trim().replace(/\s*\(\d+(\.\d+)*\)$/, '');
                                     return (
                                       <li key={di} className='break-keep'>
                                         {t}

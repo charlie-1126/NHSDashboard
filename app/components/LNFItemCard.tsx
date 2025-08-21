@@ -42,33 +42,31 @@ export function LNFItemCard({ item, variant = 'home', onClick, className }: LNFI
           className='h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105'
         />
       </div>
-      <div className={cn('flex flex-1 flex-col px-4 py-3', variant === 'dashboard' && 'px-5 py-4')}>
+      <div className='flex flex-1 flex-col px-2.5 py-2 2xl:px-5 2xl:py-4'>
         <h3 className={headingClass}>{item.name}</h3>
-        <div
-          className={cn(
-            'text-muted-foreground space-y-1.5',
-            metaTextClass,
-            variant === 'dashboard' && 'space-y-2',
-          )}
-        >
+        <div className={cn('text-muted-foreground space-y-1.5 font-bold', metaTextClass)}>
           <p className='flex items-center gap-1.5'>
             <CalendarIcon className='text-primary/70 h-3.5 w-3.5' />
             <span>
-              <strong className='text-foreground/80 font-medium'>습득 일시</strong>:{' '}
-              {formatDate(item.createdAt)}
+              <strong className='text-foreground/80 text-xs xl:text-sm 2xl:text-xl'>
+                습득 일시: {formatDate(item.createdAt)}
+              </strong>
             </span>
           </p>
           <p className='flex items-center gap-1.5'>
             <MapPinIcon className='text-primary/70 h-3.5 w-3.5' />
             <span>
-              <strong className='text-foreground/80 font-medium'>습득 위치</strong>: {item.location}
+              <strong className='text-foreground/80 text-xs xl:text-sm 2xl:text-xl'>
+                습득 위치: {item.location}
+              </strong>
             </span>
           </p>
           <p className='flex items-center gap-1.5'>
             <ClockIcon className='text-primary/70 h-3.5 w-3.5' />
             <span className={danger ? 'font-semibold text-red-500' : ''}>
-              <strong className='text-foreground/80 font-medium'>폐기 일시:</strong>{' '}
-              {formatDate(targetDate)} ({diffDays}일)
+              <strong className='text-foreground/80 text-xs xl:text-sm 2xl:text-xl'>
+                폐기 일시: {formatDate(targetDate)} ({diffDays}일)
+              </strong>
             </span>
           </p>
         </div>
