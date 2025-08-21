@@ -43,13 +43,26 @@ export function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (totalPages <= 1) return;
-    if (document.visibilityState !== 'visible') return;
+    // 항상 돌아야 하는 메시지 토글
+    if (totalPages <= 1) {
+      const interval1 = setInterval(() => {
+        setShowAltMessage((prev) => !prev);
+      }, 8000);
+
+      return () => {
+        clearInterval(interval1);
+      };
+    }
+
+    // 둘 다 동시에 8초마다 실행
     const interval = setInterval(() => {
-      setCurrentPage((prev) => (prev + 1) % totalPages);
       setShowAltMessage((prev) => !prev);
+      setCurrentPage((prev) => (prev + 1) % totalPages);
     }, 8000);
-    return () => clearInterval(interval);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [totalPages, currentPage]);
 
   useEffect(() => {
