@@ -32,7 +32,7 @@ export class NeisAPIService {
   private readonly axios = axios.create({
     baseURL: 'https://open.neis.go.kr',
     validateStatus: () => true,
-    timeout: 1000,
+    timeout: 3000,
   });
 
   private readonly cacheService = cacheService;
